@@ -23,6 +23,8 @@ export interface FnSig {
 }
 export interface Analysis {
   sigs: Map<string, FnSig>;
+  /** source text of each top-level function (trimmed), for LLM review */
+  sources: Map<string, string>;
   numbers: number[];
   strings: string[];
 }
@@ -135,30 +137,33 @@ export function analyze(source: string, fileName: string): Analysis {
   }
 
   const sigs = new Map<string, FnSig>();
+  const sources = new Map<string, string>();
+  const clip = (t: string) => (t.length > 6000 ? t.slice(0, 6000) + "\n// ...truncated" : t);
   const isDefault = (s: ts.Node) =>
     ts.canHaveModifiers(s) && !!ts.getModifiers(s)?.some((m) => m.kind === ts.SyntaxKind.DefaultKeyword);
 
   for (const s of sf.statements) {
     if (ts.isFunctionDeclaration(s)) {
-      if (s.name) sigs.set(s.name.text, sigOf(s.name.text, s));
-      if (isDefault(s)) sigs.set("default", sigOf("default", s));
+      if (s.name) (sigs.set(s.name.text, sigOf(s.name.text, s)), sources.set(s.name.text, clip(s.getText())));
+      if (isDefault(s)) (sigs.set("default", sigOf("default", s)), sources.set("default", clip(s.getText())));
     } else if (ts.isVariableStatement(s)) {
       for (const d of s.declarationList.declarations) {
         if (ts.isIdentifier(d.name) && d.initializer && (ts.isArrowFunction(d.initializer) || ts.isFunctionExpression(d.initializer))) {
           sigs.set(d.name.text, sigOf(d.name.text, d.initializer));
+          sources.set(d.name.text, clip(s.getText()));
         }
       }
     } else if (ts.isExportAssignment(s)) {
       const e = s.expression;
-      if (ts.isArrowFunction(e) || ts.isFunctionExpression(e)) sigs.set("default", sigOf("default", e));
-      else if (ts.isIdentifier(e) && sigs.has(e.text)) sigs.set("default", { ...sigs.get(e.text)!, name: "default" });
+      if (ts.isArrowFunction(e) || ts.isFunctionExpression(e)) (sigs.set("default", sigOf("default", e)), sources.set("default", clip(s.getText())));
+      else if (ts.isIdentifier(e) && sigs.has(e.text)) (sigs.set("default", { ...sigs.get(e.text)!, name: "default" }), sources.set("default", sources.get(e.text) ?? ""));
     }
   }
   for (const s of sf.statements) {
     if (ts.isExportDeclaration(s) && !s.moduleSpecifier && s.exportClause && ts.isNamedExports(s.exportClause)) {
       for (const el of s.exportClause.elements) {
         const local = (el.propertyName ?? el.name).text;
-        if (sigs.has(local)) sigs.set(el.name.text, { ...sigs.get(local)!, name: el.name.text });
+        if (sigs.has(local)) (sigs.set(el.name.text, { ...sigs.get(local)!, name: el.name.text }), sources.set(el.name.text, sources.get(local) ?? ""));
       }
     }
   }
@@ -176,5 +181,5 @@ export function analyze(source: string, fileName: string): Analysis {
     ts.forEachChild(n, visit);
   };
   visit(sf);
-  return { sigs, numbers: [...nums].slice(0, 40), strings: [...strs].slice(0, 30) };
+  return { sigs, sources, numbers: [...nums].slice(0, 40), strings: [...strs].slice(0, 30) };
 }

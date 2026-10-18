@@ -1,0 +1,54 @@
+name: BehaviorDiff
+description: Run old and new versions of changed TS/JS files and comment on the PR with behavior changes the PR description does not explain.
+author: NewBot62
+branding:
+  icon: git-pull-request
+  color: blue
+inputs:
+  api-key:
+    description: API key for the LLM endpoint (store it as a repository secret).
+    required: true
+  model:
+    description: Model id for the endpoint (for OpenRouter e.g. anthropic/claude-haiku-5.5).
+    required: true
+  provider:
+    description: openrouter | openai | deepseek | mistral | together | deepinfra | groq | gemini
+    default: openrouter
+  base-url:
+    description: Any OpenAI-compatible endpoint (overrides provider).
+    default: ""
+  max-cost:
+    description: Max USD spent on the model per file.
+    default: "0.10"
+  max-files:
+    description: Max modified files reviewed per PR.
+    default: "15"
+  fail-on-attention:
+    description: Fail the job when a change is not explained by the PR description.
+    default: "false"
+  github-token:
+    description: Token used to post the comment (needs pull-requests write).
+    default: ${{ github.token }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Build BehaviorDiff
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci && npm run build
+    - name: Review pull request
+      shell: bash
+      env:
+        LLM_API_KEY: ${{ inputs.api-key }}
+        BD_MODEL: ${{ inputs.model }}
+        BD_PROVIDER: ${{ inputs.provider }}
+        BD_BASE_URL: ${{ inputs.base-url }}
+        BD_MAX_COST: ${{ inputs.max-cost }}
+        BD_MAX_FILES: ${{ inputs.max-files }}
+        BD_FAIL_ON_ATTENTION: ${{ inputs.fail-on-attention }}
+        BD_ACTION_PATH: ${{ github.action_path }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: node "${{ github.action_path }}/scripts/pr-review.mjs"

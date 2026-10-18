@@ -2,8 +2,11 @@
   "summary": {
     "functions": 30,
     "regressions": 12,
+    "caught": 11,
     "recall": 91.66666666666667,
     "precision": 57.89473684210526,
+    "f1": 70.96774193548386,
+    "flagged": 19,
     "falseAlarmsOnIntended": {
       "flagged": 8,
       "of": 8
@@ -13,7 +16,7 @@
       "of": 10
     },
     "missed": [
-      "reg-password-maxlen-HARD"
+      "reg-password-maxlen-HARD:isValidPassword"
     ]
   },
   "rows": [

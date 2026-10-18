@@ -1,0 +1,78 @@
+name: bench-models
+# Manual run. Needs the repository secret LLM_API_KEY (an OpenRouter key).
+# Benchmarks several cheap models on bench/cases and commits bench/results/.
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: "Comma-separated OpenRouter model ids. Empty = anchors + cheapest per vendor."
+        default: ""
+      max_models:
+        description: "How many models when auto-picking"
+        default: "8"
+      runs:
+        description: "Repeats per model (temperature 0, but providers vary)"
+        default: "2"
+      max_cost_per_model:
+        description: "Hard spend cap per model in USD"
+        default: "0.50"
+
+permissions:
+  contents: write
+
+concurrency: bench-models
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      MODELS_INPUT: ${{ inputs.models }}
+      MAX_MODELS: ${{ inputs.max_models }}
+      RUNS: ${{ inputs.runs }}
+      MAX_COST: ${{ inputs.max_cost_per_model }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Require API key
+        run: |
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "::error::Repository secret LLM_API_KEY is not set (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+      - name: Refresh deterministic baseline
+        run: node dist/bench/run.js
+      - name: Choose models
+        run: |
+          if [ -n "$MODELS_INPUT" ]; then
+            echo "$MODELS_INPUT" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | grep -v '^$' | jq -R . | jq -s . > models.json
+          else
+            node scripts/pick-models.mjs "$MAX_MODELS" > models.json
+          fi
+          echo "Models:"; cat models.json
+      - name: Run benchmark per model
+        run: |
+          for m in $(jq -r '.[]' models.json); do
+            echo "::group::$m"
+            node dist/bench/llm.js --provider openrouter --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" || echo "::warning::benchmark failed for $m"
+            echo "::endgroup::"
+          done
+      - name: Leaderboard
+        run: |
+          node dist/bench/leaderboard.js > /dev/null
+          cat bench/results/LEADERBOARD.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bench/results
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "bench: model results $(date -u +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

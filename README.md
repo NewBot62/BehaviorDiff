@@ -24,17 +24,49 @@ Or compare a file against any git ref (e.g. in CI on a PR):
 behaviordiff --base origin/main src/pricing.ts --format md
 ```
 
-## Status: Phase 1 (deterministic engine, no LLM)
+## What it does
 
-Works today, with no API key and no network:
-
+**1. Deterministic engine (no LLM, no network).**
 - bundles both versions (esbuild), so TS, JS and relative imports just work
 - generates deterministic inputs from parameter types (interfaces, literal unions, arrays, records) plus **literals harvested from both versions**, so a change from `>= 18` to `> 18` is probed at 17, 18 and 19
 - runs each version in a separate Node process under `--permission` (no file writes, no child processes), with a fixed clock, seeded `Math.random`, per-call timeouts, and recovery from hangs and `process.exit`
 - reports difference kinds: `return-value`, `threw-vs-returned`, `error-type`, `error-message`, `input-mutation`, `logs`, `timeout`, `crash`
-- exit code `1` when behavior changed, so it can gate CI
 
-**What it can't do yet is tell whether a change was intended.** If a PR says "raise free shipping from 50 to 75", the correct output is "yes, shipping changed, as described". Phase 2 adds an LLM step that reads the PR description and classifies each difference as intended or unintended. The LLM never executes or compares anything; it only labels differences the engine already found. See [docs/PHASE2.md](docs/PHASE2.md).
+**2. Intent review (optional LLM step).** A difference is only a problem if the author didn't mean it. Give the PR description and a model labels each *changed* function `intended`, `unintended` or `unclear`, listing the differences the description doesn't cover. The model never runs or compares code; it only labels differences the engine already observed. Unchanged functions cost nothing.
+
+```
+export LLM_API_KEY=...        # never pass keys as flags
+behaviordiff --base origin/main src/pricing.ts \
+  --intent "Raise free-shipping threshold from 50 to 75" \
+  --provider openrouter --model anthropic/claude-haiku-5.5
+```
+
+Works with any OpenAI-compatible endpoint: `--provider openrouter|openai|deepseek|mistral|together|deepinfra|groq|gemini|ollama` or `--base-url`. Local models (Ollama, llama.cpp, vLLM) need no key and keep code on your machine. A per-run spend cap (`--max-cost`, default $0.05) stops the calls; remaining functions are reported as `unclassified`, never silently skipped.
+
+Exit code `1` when something needs attention, so it can gate CI.
+
+## GitHub Action (pull requests)
+
+```yaml
+# .github/workflows/behaviordiff.yml in YOUR repo
+on: pull_request
+permissions: { contents: read, pull-requests: write }
+jobs:
+  behaviordiff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci                      # the Action runs your code, so your deps must be installed
+      - uses: NewBot62/BehaviorDiff@main
+        with:
+          api-key: ${{ secrets.LLM_API_KEY }}
+          model: anthropic/claude-haiku-5.5
+```
+
+It reviews modified TS/JS files, uses the PR title and body as the intent, and keeps one comment up to date. Use the plain `pull_request` event (not `pull_request_target`): the Action executes the PR's code in a runner, and fork PRs don't receive secrets, in which case it skips with a notice. Advisory unless you set `fail-on-attention: true`. The Action is new and has only been tested locally with a stub model, not yet on a live PR.
 
 ## Benchmark
 
@@ -44,7 +76,7 @@ Works today, with no API key and no network:
 npm run bench
 ```
 
-Current deterministic baseline (every difference is flagged):
+Deterministic baseline (every difference is flagged, no LLM):
 
 | metric | result |
 |---|---|
@@ -54,6 +86,8 @@ Current deterministic baseline (every difference is flagged):
 | behavior-preserving refactors flagged | 0 / 10 |
 
 Read this as: the engine finds nearly every real regression and never cries wolf on a pure refactor, but because it can't see intent, 42% of what it flags is a change the author asked for. Closing that gap, cheaply, is the project's goal. A Phase 2 result only counts if precision rises clearly above this baseline at low recall loss, and the per-model cost is published with it.
+
+Model results: **not measured yet.** The harness is built and checked against stub servers (an always-"unintended" stub reproduces the baseline exactly; an always-"intended" stub scores 0% recall), but no real model has been run. Run `LLM_API_KEY=... npm run bench:llm -- --provider openrouter --model <id>` for one model, or trigger the *bench-models* workflow to compare several and commit `bench/results/LEADERBOARD.md`. Costs are measured from the provider's usage data, not estimated.
 
 Honest notes on the benchmark:
 - The cases are small and written by the author, so they are *not* a measure of real-world accuracy. They are a regression harness and a fixed yardstick for comparing models. Real-PR cases (mined from public repositories) are planned.

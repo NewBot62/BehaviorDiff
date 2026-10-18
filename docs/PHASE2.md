@@ -1,5 +1,8 @@
 # Phase 2: intent classification with cheap, swappable models
 
+**Status:** implemented and tested against stub servers. Not yet run against real models; that is the next step and needs an API key (`LLM_API_KEY` repository secret). Model candidates are chosen at run time from OpenRouter's live catalog by `scripts/pick-models.mjs` (cheapest per vendor, plus the anchors in `bench/models.json`) so no stale IDs are baked in.
+
+
 ## Goal
 Take the differences the engine found plus the PR description, and label each *intended* or *unintended*, at a per-PR cost low enough that nobody minds running it on every PR. No vendor lock-in.
 

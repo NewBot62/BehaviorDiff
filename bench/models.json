@@ -1,0 +1,8 @@
+{
+  "note": "Anchors are always benchmarked. Verified present on OpenRouter on 2026-10-18; scripts/pick-models.mjs re-checks at run time and adds the cheapest model from other vendors.",
+  "anchors": [
+    "anthropic/claude-haiku-5.5",
+    "openai/gpt-6-luna",
+    "deepseek/deepseek-v4.1-flash-1017"
+  ]
+}

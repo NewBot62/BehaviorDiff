@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "bench/run.ts"]
+  "include": ["src/**/*.ts", "bench/*.ts"]
 }
