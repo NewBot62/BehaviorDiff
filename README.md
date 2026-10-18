@@ -1,8 +1,8 @@
-# behaviordiff
+# BehaviorDiff
 
 **Compare what two versions of your TypeScript/JavaScript code actually *do*, not what the diff looks like.**
 
-AI assistants now write a large share of committed code, and reviewers can't read it all. A diff shows changed lines; it doesn't show that `discount(100)` quietly went from `90` to `100`. behaviordiff runs the old and new version of each exported function on the same generated inputs and reports every observable difference: return values, thrown errors, input mutation, logged output, timeouts.
+AI assistants now write a large share of committed code, and reviewers can't read it all. A diff shows changed lines; it doesn't show that `discount(100)` quietly went from `90` to `100`. BehaviorDiff runs the old and new version of each exported function on the same generated inputs and reports every observable difference: return values, thrown errors, input mutation, logged output, timeouts.
 
 ```
 $ behaviordiff old.ts new.ts
@@ -77,3 +77,5 @@ node dist/src/cli.js --help
 ```
 
 Requires Node 22+. MIT licensed.
+
+Naming: the project is **BehaviorDiff**; the npm package and command are `behaviordiff` (npm requires lowercase).

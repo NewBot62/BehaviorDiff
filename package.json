@@ -28,5 +28,21 @@
   "dependencies": {
     "esbuild": "^0.28.2",
     "typescript": "^5.9.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NewBot62/BehaviorDiff.git"
+  },
+  "homepage": "https://github.com/NewBot62/BehaviorDiff#readme",
+  "bugs": {
+    "url": "https://github.com/NewBot62/BehaviorDiff/issues"
+  },
+  "keywords": [
+    "behavioral-diff",
+    "differential-testing",
+    "code-review",
+    "ai-generated-code",
+    "typescript",
+    "javascript"
+  ]
 }
