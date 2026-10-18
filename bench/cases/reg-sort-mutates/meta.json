@@ -1,0 +1,7 @@
+{
+  "title": "Sort now mutates its argument",
+  "description": "Clean up sorting helper.",
+  "expect": {
+    "sortByAge": "unintended"
+  }
+}

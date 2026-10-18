@@ -1,0 +1,7 @@
+{
+  "title": "Last, First format",
+  "description": "Display names as 'Last, First'.",
+  "expect": {
+    "formatName": "intended"
+  }
+}

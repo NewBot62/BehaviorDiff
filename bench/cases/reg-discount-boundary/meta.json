@@ -1,0 +1,7 @@
+{
+  "title": "Discount boundary flipped",
+  "description": "Refactor: extract discount rate into a constant.",
+  "expect": {
+    "discount": "unintended"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Use the ellipsis character",
+  "description": "Use the single '…' character instead of three dots when truncating.",
+  "expect": {
+    "truncate": "intended"
+  }
+}

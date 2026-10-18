@@ -1,0 +1,7 @@
+{
+  "title": "Concat to template literal",
+  "description": "Use a template literal in fullName.",
+  "expect": {
+    "fullName": "none"
+  }
+}

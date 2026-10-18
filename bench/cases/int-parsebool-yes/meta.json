@@ -1,0 +1,7 @@
+{
+  "title": "Support yes/no",
+  "description": "Support 'yes' and 'no' in parseBool.",
+  "expect": {
+    "parseBool": "intended"
+  }
+}

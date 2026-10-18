@@ -1,0 +1,7 @@
+{
+  "title": "reduce to for-of",
+  "description": "Rewrite groupBy with a loop for readability.",
+  "expect": {
+    "groupBy": "none"
+  }
+}

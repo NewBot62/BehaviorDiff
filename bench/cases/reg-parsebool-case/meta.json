@@ -1,0 +1,8 @@
+{
+  "title": "Adds yes/no but breaks upper-case TRUE",
+  "description": "Support 'yes' and 'no' in parseBool.",
+  "expect": {
+    "parseBool": "unintended"
+  },
+  "note": "mixed: the 'yes' change is intended, the lost case-insensitivity is not"
+}

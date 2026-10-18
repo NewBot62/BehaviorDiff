@@ -1,0 +1,7 @@
+{
+  "title": "Slug keeps leading/trailing dashes",
+  "description": "Use a single regex in slugify.",
+  "expect": {
+    "slugify": "unintended"
+  }
+}

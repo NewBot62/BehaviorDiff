@@ -1,0 +1,7 @@
+{
+  "title": "Loop to filter/reduce",
+  "description": "Refactor sumPositive to functional style.",
+  "expect": {
+    "sumPositive": "none"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Now throws on empty string",
+  "description": "Add input trimming to initials.",
+  "expect": {
+    "initials": "unintended"
+  }
+}

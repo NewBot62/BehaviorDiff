@@ -1,0 +1,8 @@
+{
+  "title": "function to arrow + helper unchanged",
+  "description": "Convert to arrow functions; no behavior change.",
+  "expect": {
+    "double": "none",
+    "isOdd": "none"
+  }
+}

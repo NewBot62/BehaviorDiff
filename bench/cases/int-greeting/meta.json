@@ -1,0 +1,7 @@
+{
+  "title": "Greeting gets exclamation mark",
+  "description": "Add an exclamation mark to the greeting.",
+  "expect": {
+    "greet": "intended"
+  }
+}

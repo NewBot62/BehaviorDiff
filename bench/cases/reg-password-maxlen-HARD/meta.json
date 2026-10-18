@@ -1,0 +1,8 @@
+{
+  "title": "Max length 64 -> 63 (needs a 64-char input)",
+  "description": "Tighten password validation message.",
+  "expect": {
+    "isValidPassword": "unintended"
+  },
+  "note": "baseline is expected to MISS this: no generated string has length 64"
+}

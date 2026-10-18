@@ -1,0 +1,7 @@
+{
+  "title": "De Morgan rewrite",
+  "description": "Rewrite inRange using De Morgan.",
+  "expect": {
+    "inRange": "none"
+  }
+}

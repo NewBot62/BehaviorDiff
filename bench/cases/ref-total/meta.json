@@ -1,0 +1,7 @@
+{
+  "title": "reduce to loop with early typing",
+  "description": "Rewrite cart total as a loop.",
+  "expect": {
+    "total": "none"
+  }
+}

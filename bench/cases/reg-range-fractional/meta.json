@@ -1,0 +1,7 @@
+{
+  "title": "Array.from range differs for fractional end",
+  "description": "Refactor range to Array.from.",
+  "expect": {
+    "range": "unintended"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Add Canada tax rate",
+  "description": "Add Canada (5%) to tax rates.",
+  "expect": {
+    "taxRate": "intended"
+  }
+}

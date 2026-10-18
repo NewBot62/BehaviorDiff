@@ -1,0 +1,7 @@
+{
+  "title": "Cap backoff at 30s",
+  "description": "Cap exponential backoff at 30 seconds.",
+  "expect": {
+    "retryDelay": "intended"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Loop to Set",
+  "description": "Use Set in unique.",
+  "expect": {
+    "unique": "none"
+  }
+}

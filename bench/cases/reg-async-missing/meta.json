@@ -1,0 +1,7 @@
+{
+  "title": "Async lookup returns undefined instead of default",
+  "description": "Add lookup cache.",
+  "expect": {
+    "lookup": "unintended"
+  }
+}

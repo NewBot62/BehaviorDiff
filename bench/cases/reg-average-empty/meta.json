@@ -1,0 +1,7 @@
+{
+  "title": "Average of empty array becomes NaN",
+  "description": "Simplify average using reduce.",
+  "expect": {
+    "average": "unintended"
+  }
+}

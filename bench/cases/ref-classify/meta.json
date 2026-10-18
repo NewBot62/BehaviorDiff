@@ -1,0 +1,7 @@
+{
+  "title": "if/else to ternary chain",
+  "description": "Simplify classify with ternaries.",
+  "expect": {
+    "classify": "none"
+  }
+}

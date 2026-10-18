@@ -1,0 +1,7 @@
+{
+  "title": "Dedupe keeps last instead of first",
+  "description": "Use Map for faster dedupe.",
+  "expect": {
+    "uniqueById": "unintended"
+  }
+}

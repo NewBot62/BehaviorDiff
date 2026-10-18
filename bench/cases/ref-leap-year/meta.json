@@ -1,0 +1,7 @@
+{
+  "title": "Reorder boolean expression",
+  "description": "Reorder leap year conditions for readability.",
+  "expect": {
+    "isLeapYear": "none"
+  }
+}

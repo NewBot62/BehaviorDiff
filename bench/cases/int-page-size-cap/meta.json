@@ -1,0 +1,7 @@
+{
+  "title": "Cap page size at 100",
+  "description": "Clamp page size to a maximum of 100.",
+  "expect": {
+    "paginate": "intended"
+  }
+}

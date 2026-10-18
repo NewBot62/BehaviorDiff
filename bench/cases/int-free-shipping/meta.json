@@ -1,0 +1,7 @@
+{
+  "title": "Free shipping threshold 50 -> 75",
+  "description": "Raise free-shipping threshold from 50 to 75.",
+  "expect": {
+    "shippingCost": "intended"
+  }
+}

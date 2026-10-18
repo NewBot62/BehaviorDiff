@@ -1,0 +1,7 @@
+{
+  "title": "|| replaced by ?? changes empty-string behavior",
+  "description": "Modernize with nullish coalescing.",
+  "expect": {
+    "label": "unintended"
+  }
+}

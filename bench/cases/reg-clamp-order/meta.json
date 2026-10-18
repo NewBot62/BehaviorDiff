@@ -1,0 +1,7 @@
+{
+  "title": "Clamp differs when lo > hi",
+  "description": "Tidy clamp implementation.",
+  "expect": {
+    "clamp": "unintended"
+  }
+}
