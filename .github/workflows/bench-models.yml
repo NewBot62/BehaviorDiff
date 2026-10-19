@@ -73,16 +73,20 @@ jobs:
           echo "Models:"; cat models.json
       - name: Run benchmark per model
         run: |
-          CONC=4; [ "$FREE_ONLY" = "true" ] && CONC=1
-          for m in $(jq -r '.[]' models.json); do
-            echo "::group::$m"
-            node dist/bench/llm.js --provider openrouter --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "::warning::benchmark failed for $m"
-            echo "::endgroup::"
-          done
+          mkdir -p bench/results
+          {
+            CONC=4; [ "$FREE_ONLY" = "true" ] && CONC=1
+            echo "models: $(cat models.json)"
+            for m in $(jq -r '.[]' models.json); do
+              echo "=== $m"
+              node dist/bench/llm.js --provider openrouter --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "FAILED: $m"
+            done
+          } 2>&1 | tee bench/results/last-run.log
       - name: Leaderboard
         run: |
           node dist/bench/leaderboard.js > /dev/null
           cat bench/results/LEADERBOARD.md >> "$GITHUB_STEP_SUMMARY"
+          { echo; echo '### Run log'; echo '```'; tail -n 60 bench/results/last-run.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"
