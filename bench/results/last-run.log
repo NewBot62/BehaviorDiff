@@ -1,0 +1,7 @@
+models: ["xingchen-agi/xing4.0-29b-a4b:free","nvidia/nemotron-3.5-super-vl:free"]
+=== xingchen-agi/xing4.0-29b-a4b:free
+PREFLIGHT FAILED for xingchen-agi/xing4.0-29b-a4b:free: LLM request failed after retries (HTTP 429)
+FAILED: xingchen-agi/xing4.0-29b-a4b:free
+=== nvidia/nemotron-3.5-super-vl:free
+PREFLIGHT FAILED for nvidia/nemotron-3.5-super-vl:free: LLM request failed after retries (HTTP 429)
+FAILED: nvidia/nemotron-3.5-super-vl:free
