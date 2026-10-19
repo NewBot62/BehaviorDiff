@@ -72,6 +72,8 @@ export function decode(e: unknown): unknown {
     err.name = x.name;
     return err;
   }
+  if ("$t" in o) return (o.$t as unknown[]).map(decode);
+  if ("$by" in o) return `b'${String(o.$by)}'`;
   if ("$m" in o) return new Map((o.$m as [unknown, unknown][]).map(([k, v]) => [decode(k), decode(v)]));
   if ("$set" in o) return new Set((o.$set as unknown[]).map(decode));
   if ("$ta" in o) {

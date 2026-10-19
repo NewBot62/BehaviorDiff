@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { inspect } from "node:util";
 import { build } from "esbuild";
 import { analyze, type Analysis, type FnSig } from "./analyze.js";
+import { pyAnalysis, pyConsts, pythonLauncher } from "./python.js";
 import { generateInputs, type GenCtx } from "./inputs.js";
 import { canonical, decode, encode } from "./serialize.js";
 import type { CompareOptions, Difference, DiffKind, FunctionReport, Report } from "./types.js";
@@ -33,13 +34,21 @@ interface ChildOutcome {
   stderr: string;
 }
 
-function spawnRunner(args: string[], tmp: string, startupMs: number, callMs: number): Promise<ChildOutcome> {
+/** How to start a runner process for a language. */
+export interface Launcher {
+  (args: string[], tmp: string): { cmd: string; argv: string[]; env: Record<string, string> };
+}
+
+const nodeLauncher: Launcher = (args, tmp) => ({
+  cmd: process.execPath,
+  argv: ["--permission", `--allow-fs-read=${dirname(RUNNER)}`, `--allow-fs-read=${tmp}`, "--no-warnings", RUNNER, ...args],
+  env: { PATH: process.env.PATH ?? "", NODE_ENV: "test", TZ: "UTC" },
+});
+
+function spawnRunner(launch: Launcher, args: string[], tmp: string, startupMs: number, callMs: number): Promise<ChildOutcome> {
   return new Promise((res) => {
-    const child = spawn(
-      process.execPath,
-      ["--permission", `--allow-fs-read=${dirname(RUNNER)}`, `--allow-fs-read=${tmp}`, "--no-warnings", RUNNER, ...args],
-      { stdio: ["ignore", "pipe", "pipe"], env: { PATH: process.env.PATH ?? "", NODE_ENV: "test", TZ: "UTC" } },
-    );
+    const l = launch(args, tmp);
+    const child = spawn(l.cmd, l.argv, { stdio: ["ignore", "pipe", "pipe"], env: l.env });
     const lines: Record<string, unknown>[] = [];
     let buf = "";
     let stderr = "";
@@ -80,21 +89,21 @@ function spawnRunner(args: string[], tmp: string, startupMs: number, callMs: num
   });
 }
 
-async function listExports(bundle: string, tmp: string): Promise<ExportInfo[]> {
-  const r = await spawnRunner(["list", bundle], tmp, 10000, 10000);
+async function listExports(launch: Launcher, bundle: string, tmp: string): Promise<Record<string, unknown> & { exports: ExportInfo[] }> {
+  const r = await spawnRunner(launch, ["list", bundle], tmp, 20000, 20000);
   const line = r.lines.find((l) => "exports" in l || "fatal" in l);
   if (!line || "fatal" in line) {
     throw new Error(`could not load module: ${(line?.fatal as string) ?? (r.stderr.trim().split("\n")[0] || "no output")}`);
   }
-  return line.exports as ExportInfo[];
+  return line as Record<string, unknown> & { exports: ExportInfo[] };
 }
 
-async function execFunction(bundle: string, name: string, inputsFile: string, total: number, tmp: string, callMs: number): Promise<CallResult[]> {
+async function execFunction(launch: Launcher, bundle: string, name: string, inputsFile: string, total: number, tmp: string, callMs: number): Promise<CallResult[]> {
   const results: CallResult[] = new Array(total);
   let next = 0;
   let restarts = 0;
   while (next < total) {
-    const r = await spawnRunner(["run", bundle, name, inputsFile, String(next), String(callMs)], tmp, 10000, callMs + 500);
+    const r = await spawnRunner(launch, ["run", bundle, name, inputsFile, String(next), String(callMs)], tmp, 20000, callMs + 500);
     let finished = false;
     for (const l of r.lines) {
       if (typeof l.i === "number") {
@@ -184,30 +193,47 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
   const base: Report = { oldFile, newFile, functions: [], behaviorChanged: false };
   const tmp = mkdtempSync(join(tmpdir(), "behaviordiff-"));
   try {
-    const oldB = join(tmp, "old.mjs");
-    const newB = join(tmp, "new.mjs");
-    try {
-      await bundleFile(oldFile, oldB);
-    } catch (e) {
-      return { ...base, error: `old version does not build: ${firstLine(e)}` };
-    }
-    try {
-      await bundleFile(newFile, newB);
-    } catch (e) {
-      return { ...base, behaviorChanged: true, error: `new version does not build: ${firstLine(e)}` };
+    const py = /\.py$/.test(oldFile) || /\.py$/.test(newFile);
+    if (py && !(/\.py$/.test(oldFile) && /\.py$/.test(newFile))) return { ...base, error: "cannot compare a Python file with a non-Python file" };
+    const launch = py ? pythonLauncher() : nodeLauncher;
+    let oldB: string, newB: string;
+    if (py) {
+      oldB = resolve(oldFile);
+      newB = resolve(newFile);
+    } else {
+      oldB = join(tmp, "old.mjs");
+      newB = join(tmp, "new.mjs");
+      try {
+        await bundleFile(oldFile, oldB);
+      } catch (e) {
+        return { ...base, error: `old version does not build: ${firstLine(e)}` };
+      }
+      try {
+        await bundleFile(newFile, newB);
+      } catch (e) {
+        return { ...base, behaviorChanged: true, error: `new version does not build: ${firstLine(e)}` };
+      }
     }
     let oldEx: ExportInfo[], newEx: ExportInfo[];
+    let oldA: Analysis, newA: Analysis;
     try {
-      [oldEx, newEx] = await Promise.all([listExports(oldB, tmp), listExports(newB, tmp)]);
+      const [lo, ln] = await Promise.all([listExports(launch, oldB, tmp), listExports(launch, newB, tmp)]);
+      oldEx = lo.exports;
+      newEx = ln.exports;
+      if (py) {
+        oldA = pyAnalysis(lo);
+        newA = pyAnalysis(ln);
+      } else {
+        oldA = analyze(readFileSync(oldFile, "utf8"), basename(oldFile));
+        newA = analyze(readFileSync(newFile, "utf8"), basename(newFile));
+      }
     } catch (e) {
       return { ...base, error: firstLine(e) };
     }
-    const oldA = analyze(readFileSync(oldFile, "utf8"), basename(oldFile));
-    const newA = analyze(readFileSync(newFile, "utf8"), basename(newFile));
     const seed = { numbers: [] as number[], strings: [] as string[] };
     for (const f of opts.seedFiles ?? []) {
       try {
-        const a = analyze(readFileSync(f, "utf8"), basename(f), { maxStrings: 120, maxNumbers: 60, maxStringLength: 60 });
+        const a = py ? pyConsts(f) : analyze(readFileSync(f, "utf8"), basename(f), { maxStrings: 120, maxNumbers: 60, maxStringLength: 60 });
         seed.numbers.push(...a.numbers);
         seed.strings.push(...a.strings);
       } catch {
@@ -247,8 +273,8 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
       const inputsFile = join(tmp, `in-${name.replace(/\W/g, "_")}.json`);
       writeFileSync(inputsFile, JSON.stringify(inputs.map((a) => encode(a))));
       const [ro, rn] = await Promise.all([
-        execFunction(oldB, name, inputsFile, inputs.length, tmp, callMs),
-        execFunction(newB, name, inputsFile, inputs.length, tmp, callMs),
+        execFunction(launch, oldB, name, inputsFile, inputs.length, tmp, callMs),
+        execFunction(launch, newB, name, inputsFile, inputs.length, tmp, callMs),
       ]);
       const kinds: FunctionReport["kinds"] = {};
       const diffs: (Difference & { sz: number })[] = [];

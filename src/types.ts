@@ -7,7 +7,14 @@ export type DiffKind =
   | "input-mutation"
   | "logs"
   | "timeout"
-  | "crash";
+  | "crash"
+  | "exit-code"
+  | "stdout"
+  | "stderr"
+  | "files"
+  | "status"
+  | "headers"
+  | "body";
 
 export interface Difference {
   kind: DiffKind;

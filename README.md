@@ -1,8 +1,8 @@
 # BehaviorDiff
 
-> **Status: experimental alpha.** The deterministic engine and the GitHub Action work end to end. The LLM "is this change intended?" step cuts noise but is not accurate enough to trust blindly (see [Benchmark](#benchmark)). Treat its comments as advice for a human reviewer.
+> **Reliable part:** the deterministic engine (it reports only differences it actually observed). **Advisory part:** the optional LLM "was this change intended?" label; it cuts noise but is not accurate enough to trust blindly (see [Benchmark](#benchmark)).
 
-**Compare what two versions of your TypeScript/JavaScript code actually *do*, not what the diff looks like.**
+**Compare what two versions of your code actually *do*, not what the diff looks like. TypeScript/JavaScript and Python at function level; any other language (Go, Rust, Java, PHP, ...) as a program or an API.**
 
 AI assistants now write a large share of committed code, and reviewers can't read it all. A diff shows changed lines; it doesn't show that `discount(100)` quietly went from `90` to `100`. BehaviorDiff runs the old and new version of each exported function on the same generated inputs and reports every observable difference: return values, thrown errors, input mutation, logged output, timeouts.
 
@@ -35,6 +35,8 @@ behaviordiff --base origin/main src/pricing.ts --format md
 | Before committing | `behaviordiff --staged` | no |
 | Upgrading a dependency | `behaviordiff --pkg lib@1.2 lib@1.3` | no |
 | Using a coding agent | [MCP server](docs/USAGE.md#coding-agents-mcp) | optional |
+| Go / Rust / Java / PHP / Ruby / C# | `behaviordiff cmd` (programs), `behaviordiff http` (APIs) | optional |
+| Rewriting or migrating a service | `behaviordiff http --har traffic.har` | no |
 
 Runs anywhere with Node 22+ and your dependencies installed (laptop, CI, container). Models: any OpenAI-compatible endpoint (OpenRouter, NVIDIA free endpoints, OpenAI, Groq, DeepSeek, ..., or a local Ollama). **Full guide with recipes for GitHub, GitLab, pre-commit, MCP, config file and privacy: [docs/USAGE.md](docs/USAGE.md).**
 
@@ -43,6 +45,9 @@ behaviordiff old.ts new.ts
 behaviordiff --changed                       # all modified files vs main
 behaviordiff --staged                        # pre-commit
 behaviordiff --pkg zod@3.22.0 zod@3.23.0     # what did this npm upgrade change?
+behaviordiff old.py new.py                   # Python functions and classes
+behaviordiff cmd --old ./tool-v1 --new ./tool-v2 --cases cases.json      # any program
+behaviordiff http --old http://localhost:3000 --new http://localhost:3001 --openapi api.json   # any API
 behaviordiff --changed --expect-no-change    # refactor gate (exit 1 if anything differs)
 behaviordiff --changed --intent-from-commits --provider nvidia --model openai/gpt-oss-20b
 ```
@@ -134,7 +139,7 @@ Honest notes on the benchmark:
 
 ## Limits (please read)
 
-- **Not a security sandbox.** Node's permission model blocks file writes and child processes, but not network access, and the code under test can read files you allow. Run it on code you'd run in your tests anyway, in CI or a container.
+- **Not a security sandbox.** For JS/TS, Node's permission model blocks file writes and child processes but not network access; for Python an audit hook blocks writes, subprocesses and network; `cmd` and `http` modes run your programs with your permissions. The code under test can read files you allow. Run it on code you'd run in your tests anyway, in CI or a container.
 - Exported functions, objects of functions and classes (constructor, public methods, statics, public state) are exercised; private members, getters and module-level side effects are not.
 - Inputs are generated, not exhaustive. "No difference found" means none was found on the generated inputs, not proof of equivalence. Functions whose arguments need very specific shapes (parsers, domain strings) get low coverage; the report says so when nearly every input throws.
 - The clock and `Math.random` are frozen; other nondeterminism (network, `crypto`, timers) is not controlled.

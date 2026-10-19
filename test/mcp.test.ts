@@ -46,7 +46,7 @@ describe("mcp server", () => {
       { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "behavior_diff_changed", arguments: { base: "HEAD" } } },
     ]);
     expect(r[1].result.serverInfo.name).toBe("behaviordiff");
-    expect(r[2].result.tools.map((t: any) => t.name)).toEqual(["behavior_diff_changed", "behavior_diff_files", "behavior_diff_package"]);
+    expect(r[2].result.tools.map((t: any) => t.name)).toEqual(["behavior_diff_changed", "behavior_diff_files", "behavior_diff_package", "behavior_diff_command", "behavior_diff_http"]);
     const t = r[3].result.content[0].text as string;
     expect(t).toContain("behavior changed in 1");
     expect(t).toContain("f(");

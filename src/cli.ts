@@ -6,6 +6,7 @@ import {
   PROVIDERS,
   commitMessages,
   compareFiles,
+  classifyReport,
   compareGitRef,
   comparePackages,
   defaultBase,
@@ -17,6 +18,8 @@ import {
   reviewFiles,
   reviewGitRef,
 } from "./index.js";
+import { compareCommands, compareCommandsGit, loadCases, type CmdCase } from "./cmd.js";
+import { compareHttp, compareHttpGit, loadRequests, type HttpOptions } from "./http.js";
 import type { Report } from "./types.js";
 
 const USAGE = `behaviordiff - compare what two versions of TS/JS code DO (not what the diff looks like)
@@ -27,6 +30,13 @@ What to compare:
   behaviordiff --changed [--base <git-ref>]   every modified file vs a ref (default: merge-base with main)
   behaviordiff --staged                       every staged file (HEAD vs working tree), e.g. in a pre-commit hook
   behaviordiff --pkg <name@old> <name@new>    two published npm versions: what changed in this upgrade?
+
+Any language (Go, Rust, Python, Java, ...):
+  behaviordiff cmd --old "./tool-v1" --new "./tool-v2" --cases cases.json     two programs, same cases
+  behaviordiff cmd --base origin/main --build "make" --run "./bin/tool" --cases cases.json
+  behaviordiff http --old http://localhost:3000 --new http://localhost:3001 --openapi api.json
+  behaviordiff http --base origin/main --build "npm ci" --start "node server.js" --requests reqs.json
+  (see docs/USAGE.md: cases / requests formats, --case "args", --har file.har, --ignore-fields, --allow-unsafe)
 
 Options:
   --format text|md|json   output format (default text)
@@ -93,6 +103,26 @@ async function main(): Promise<number> {
       "price-out": { type: "string" },
       "json-mode": { type: "boolean" },
       "redact-source": { type: "boolean" },
+      old: { type: "string" },
+      new: { type: "string" },
+      run: { type: "string" },
+      cases: { type: "string" },
+      case: { type: "string", multiple: true },
+      build: { type: "string" },
+      start: { type: "string" },
+      fixtures: { type: "string" },
+      normalize: { type: "string", multiple: true },
+      "no-files": { type: "boolean" },
+      "no-flake-check": { type: "boolean" },
+      requests: { type: "string" },
+      har: { type: "string" },
+      openapi: { type: "string" },
+      "ignore-fields": { type: "string" },
+      headers: { type: "string" },
+      "allow-unsafe": { type: "boolean" },
+      "old-start": { type: "string" },
+      "new-start": { type: "string" },
+      "header-add": { type: "string", multiple: true },
       help: { type: "boolean", short: "h" },
     },
   });
@@ -115,8 +145,10 @@ async function main(): Promise<number> {
     ...(customInputs ? { customInputs } : {}),
   };
 
-  const project = !!(v.changed || v.staged);
-  const need = v.pkg ? 2 : project ? 0 : v.base ? 1 : 2;
+  const sub = positionals[0] === "cmd" || positionals[0] === "http" ? positionals[0] : undefined;
+  if (sub) positionals.shift();
+  const project = !!(v.changed || v.staged) && !sub;
+  const need = sub ? 0 : v.pkg ? 2 : project ? 0 : v.base ? 1 : 2;
   if (positionals.length !== need) return (console.error(USAGE), 2);
 
   let intent = v.intent ?? (v["intent-file"] ? readFileSync(v["intent-file"], "utf8") : undefined);
@@ -165,13 +197,43 @@ async function main(): Promise<number> {
     failed = rep.attention !== undefined ? rep.attention > 0 : rep.behaviorChanged;
   } else {
     let report: Report;
-    if (v.pkg) {
+    if (sub === "cmd") {
+      const norm = (v.normalize ?? []).map((x) => {
+        const [pattern, replace] = x.split("=>");
+        return { pattern: pattern!, ...(replace !== undefined ? { replace } : {}) };
+      });
+      const cases: CmdCase[] = [...(v.cases ? loadCases(v.cases) : []), ...(v.case ?? []).map((c) => ({ args: c.split(/\s+/).filter(Boolean) }))];
+      const co = { cases, normalize: norm, ...(v.timeout ? { timeoutMs: Number(v.timeout) } : {}), ...(v.fixtures ? { fixtures: v.fixtures } : {}), ...(v["no-files"] ? { checkFiles: false } : {}), ...(v["no-flake-check"] ? { flakeCheck: false } : {}) };
+      if (v.base) {
+        if (!v.run) return (console.error("cmd --base needs --run \"<command>\" (and usually --build \"<build command>\")"), 2);
+        report = await compareCommandsGit(v.base, { ...co, cmd: v.run, ...(v.build ? { build: v.build } : {}) }, cwd);
+      } else {
+        if (!v.old || !v.new) return (console.error("cmd needs --old \"<command>\" --new \"<command>\" (or --base <ref> --run \"<command>\")"), 2);
+        report = await compareCommands({ ...co, oldCmd: v.old, newCmd: v.new });
+      }
+    } else if (sub === "http") {
+      const ho: Omit<HttpOptions, "oldUrl" | "newUrl"> = {
+        requests: await loadRequests({ ...(v.requests ? { file: v.requests } : {}), ...(v.har ? { har: v.har } : {}), ...(v.openapi ? { openapi: v.openapi } : {}) }),
+        ...(v["ignore-fields"] ? { ignoreFields: splitList(v["ignore-fields"])! } : {}),
+        ...(v.headers ? { compareHeaders: splitList(v.headers)! } : {}),
+        ...(v["allow-unsafe"] ? { allowUnsafe: true } : {}),
+        ...(v.timeout ? { timeoutMs: Number(v.timeout) } : {}),
+        ...(v["header-add"] ? { extraHeaders: Object.fromEntries(v["header-add"].map((h) => [h.slice(0, h.indexOf(":")).trim(), h.slice(h.indexOf(":") + 1).trim()])) } : {}),
+      };
+      if (v.base) {
+        if (!v.start) return (console.error("http --base needs --start \"<server command>\" (use {port} or $PORT for the port) and usually --build"), 2);
+        report = await compareHttpGit(v.base, { ...ho, start: v.start, ...(v.build ? { build: v.build } : {}) }, cwd);
+      } else {
+        report = await compareHttp({ ...ho, oldUrl: v.old ?? "", newUrl: v.new ?? "", ...(v["old-start"] ? { oldStart: v["old-start"] } : {}), ...(v["new-start"] ? { newStart: v["new-start"] } : {}) });
+      }
+    } else if (v.pkg) {
       report = await comparePackages(positionals[0]!, positionals[1]!, { ...opts, ...(ro ? { intent: ro.intent, llm: ro.llm, ...(maxCost !== undefined ? { maxCostUsd: maxCost } : {}) } : {}) });
     } else if (v.base) {
       report = ro ? await reviewGitRef(v.base, positionals[0]!, ro) : await compareGitRef(v.base, positionals[0]!, opts);
     } else {
       report = ro ? await reviewFiles(positionals[0]!, positionals[1]!, ro) : await compareFiles(positionals[0]!, positionals[1]!, opts);
     }
+    if (sub && ro && !report.error) report = await classifyReport(report, "", "", ro);
     console.log(v.format === "json" ? JSON.stringify(report, null, 2) : fmt(report));
     err = !!report.error && !report.behaviorChanged;
     failed = report.llm ? !!(report.attention || report.error) : report.behaviorChanged;

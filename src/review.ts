@@ -4,6 +4,7 @@ import { analyze } from "./analyze.js";
 import { classifyFunction } from "./classify.js";
 import { compareFiles } from "./engine.js";
 import { withGitBase } from "./git.js";
+import { pySources } from "./python.js";
 import { addUsage, emptyUsage, type LlmConfig } from "./llm.js";
 import type { CompareOptions, Report } from "./types.js";
 
@@ -20,6 +21,7 @@ export interface ReviewOptions extends CompareOptions {
 }
 
 function sourcesOf(file: string): Map<string, string> {
+  if (/\.py$/.test(file)) return pySources(file);
   try {
     return analyze(readFileSync(file, "utf8"), basename(file)).sources;
   } catch {

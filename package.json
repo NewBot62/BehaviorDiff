@@ -1,7 +1,7 @@
 {
   "name": "behaviordiff",
   "version": "0.0.1",
-  "description": "Behavioral diff for TypeScript/JavaScript changes: run the old and new version on generated inputs and report what changed in behavior, not in text.",
+  "description": "Behavioral diff: run the old and new version of your code (TS/JS, Python, or any program/API) on the same inputs and report what changed in behavior, not in text.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -20,7 +20,7 @@
     "scripts/pr-review.mjs"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && mkdir -p dist/src/py && cp src/py/runner.py dist/src/py/runner.py",
     "test": "npm run build && vitest run",
     "bench": "npm run build && node dist/bench/run.js && node dist/bench/run.js --suite=hard && node dist/bench/run.js --suite=real",
     "bench:llm": "npm run build && node dist/bench/llm.js",

@@ -39,8 +39,8 @@ export interface ProjectReport {
   intent?: string;
 }
 
-const CODE = /\.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$/;
-const SKIP = /(\.d\.ts$|\.test\.|\.spec\.|(^|\/)(node_modules|dist|build|coverage|__tests__|test|tests|__mocks__)\/|\.config\.|(^|\/)(vite|jest|webpack|rollup)\.)/;
+const CODE = /\.(ts|tsx|mts|cts|js|jsx|mjs|cjs|py)$/;
+const SKIP = /((^|\/)(test_[^/]*|[^/]*_test|conftest|setup|manage|__init__|__main__)\.py$|(^|\/)(venv|\.venv|site-packages|migrations)\/|\.d\.ts$|\.test\.|\.spec\.|(^|\/)(node_modules|dist|build|coverage|__tests__|test|tests|__mocks__)\/|\.config\.|(^|\/)(vite|jest|webpack|rollup)\.)/;
 
 const git = (cwd: string, ...a: string[]) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 

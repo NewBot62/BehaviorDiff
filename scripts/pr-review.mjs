@@ -35,8 +35,8 @@ try { sh("git", ["rev-parse", "--verify", remoteBase]); } catch { sh("git", ["fe
 const mergeBase = sh("git", ["merge-base", remoteBase, "HEAD"]);
 const files = sh("git", ["diff", "--name-only", "--diff-filter=M", `${mergeBase}...HEAD`])
   .split("\n")
-  .filter((f) => /\.(ts|tsx|mts|js|jsx|mjs|cjs)$/.test(f))
-  .filter((f) => !/(\.d\.ts$|\.test\.|\.spec\.|(^|\/)(node_modules|dist|build|__tests__|test|tests)\/)/.test(f))
+  .filter((f) => /\.(ts|tsx|mts|js|jsx|mjs|cjs|py)$/.test(f))
+  .filter((f) => !/(\.d\.ts$|\.test\.|\.spec\.|(^|\/)(test_[^/]*|[^/]*_test|conftest|setup|__init__)\.py$|(^|\/)(node_modules|dist|build|__tests__|test|tests|venv|\.venv)\/)/.test(f))
   .slice(0, Number(env.BD_MAX_FILES ?? 15));
 
 const tmp = mkdtempSync(join(tmpdir(), "bd-pr-"));
@@ -53,6 +53,7 @@ function seedsFor(f) {
     let names = [];
     try { names = readdirSync(d); } catch { continue; }
     for (const n of names) {
+      if (f.endsWith(".py")) { if (n === `test_${base}.py` || n === `${base}_test.py`) out.push(join(d, n)); continue; }
       if (new RegExp(`^${base}\\.(test|spec)\\.`).test(n) || (d !== dir && n.startsWith(base + ".")) || /^test\.(js|mjs|cjs|ts)$/.test(n)) out.push(join(d, n));
     }
   }

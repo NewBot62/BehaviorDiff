@@ -8,3 +8,5 @@ export type { Report, FunctionReport, Difference, DiffKind, CompareOptions, Revi
 export { reviewChanged, changedFiles, defaultBase, commitMessages, formatProjectText, type ProjectOptions, type ProjectReport } from "./project.js";
 export { seedsFor } from "./seeds.js";
 export { comparePackages, parseSpec, entryOf, type PkgOptions } from "./pkg.js";
+export { compareCommands, compareCommandsGit, expandCases, loadCases, type CmdCase, type CmdOptions } from "./cmd.js";
+export { compareHttp, compareHttpGit, loadRequests, fromHar, fromOpenApi, diffJson, startServer, type HttpReq, type HttpOptions } from "./http.js";

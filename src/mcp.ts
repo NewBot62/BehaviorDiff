@@ -4,6 +4,8 @@
 import { createInterface } from "node:readline";
 import { loadConfig } from "./config.js";
 import { comparePackages } from "./pkg.js";
+import { compareCommands, type CmdCase } from "./cmd.js";
+import { compareHttp, loadRequests, type HttpReq } from "./http.js";
 import { compareFiles } from "./engine.js";
 import { formatMarkdown, formatText } from "./report.js";
 import { formatProjectText, reviewChanged } from "./project.js";
@@ -43,6 +45,35 @@ const TOOLS = [
       type: "object",
       properties: { old: { type: "string", description: "name@version" }, new: { type: "string", description: "name@version" } },
       required: ["old", "new"],
+    },
+  },
+  {
+    name: "behavior_diff_command",
+    description: "Language-agnostic: run two versions of ANY program (Go, Rust, Python, Java, shell...) on the same cases and compare exit code, stdout, stderr and files written. Use after changing a CLI/tool to see what its observable behavior change is.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        old_command: { type: "string", description: "command line of the old version, e.g. ./tool-v1" },
+        new_command: { type: "string", description: "command line of the new version" },
+        cases: { type: "array", description: "each case: {args: string[], stdin?: string, env?: object, files?: {name: content}}", items: { type: "object" } },
+      },
+      required: ["old_command", "new_command", "cases"],
+    },
+  },
+  {
+    name: "behavior_diff_http",
+    description: "Language-agnostic: send the same HTTP requests to an old and a new version of a web service and compare status, headers and JSON bodies (volatile fields such as ids and timestamps are detected and ignored). Only GET/HEAD/OPTIONS unless allow_unsafe is true.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        old_url: { type: "string" },
+        new_url: { type: "string" },
+        requests: { type: "array", description: 'strings like "GET /users/1" or {method, path, headers, body}', items: {} },
+        openapi_file: { type: "string", description: "path to an OpenAPI JSON file to generate requests from" },
+        ignore_fields: { type: "array", items: { type: "string" } },
+        allow_unsafe: { type: "boolean" },
+      },
+      required: ["old_url", "new_url"],
     },
   },
 ];
@@ -86,6 +117,29 @@ async function callTool(name: string, a: Record<string, unknown>) {
   }
   if (name === "behavior_diff_package") {
     const rep = await comparePackages(String(a.old), String(a.new));
+    return text(formatMarkdown(rep));
+  }
+  if (name === "behavior_diff_command") {
+    const cases = (Array.isArray(a.cases) ? a.cases : []) as CmdCase[];
+    const rep = await compareCommands({ oldCmd: String(a.old_command), newCmd: String(a.new_command), cases });
+    return text(formatMarkdown(rep));
+  }
+  if (name === "behavior_diff_http") {
+    const reqs: HttpReq[] = [];
+    for (const r of Array.isArray(a.requests) ? a.requests : []) {
+      if (typeof r === "string") {
+        const m = /^(?:([A-Z]+)\s+)?(\S+)$/.exec(r.trim());
+        if (m) reqs.push({ method: m[1] ?? "GET", path: m[2]! });
+      } else reqs.push(r as HttpReq);
+    }
+    const loaded = await loadRequests({ ...(typeof a.openapi_file === "string" ? { openapi: a.openapi_file } : {}) }).catch(() => [] as HttpReq[]);
+    const rep = await compareHttp({
+      oldUrl: String(a.old_url),
+      newUrl: String(a.new_url),
+      requests: [...reqs, ...loaded],
+      ...(Array.isArray(a.ignore_fields) ? { ignoreFields: a.ignore_fields.map(String) } : {}),
+      ...(a.allow_unsafe === true ? { allowUnsafe: true } : {}),
+    });
     return text(formatMarkdown(rep));
   }
   return text(`unknown tool ${name}`, true);
