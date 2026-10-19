@@ -5,7 +5,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { classifyReport, compareFiles, resolveConfig, type Report } from "../src/index.js";
+import { chat, classifyReport, compareFiles, resolveConfig, type Report } from "../src/index.js";
 import { score, type Row, type Truth } from "./score.js";
 
 interface Meta { title: string; description: string; expect: Record<string, Truth>; note?: string }
@@ -41,6 +41,15 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bench");
 const casesDir = join(root, "cases");
 const names = readdirSync(casesDir).sort().filter((n) => !values.only || n.includes(values.only));
 
+// Preflight: one tiny call. A bad key, no credit or unknown model must fail loudly,
+// never produce a table of "unclear" verdicts that looks like a result.
+try {
+  await chat({ ...llm, maxTokens: 20 }, [{ role: "user", content: "Reply with the single word OK." }]);
+} catch (e) {
+  console.error(`PREFLIGHT FAILED for ${llm.model}: ${(e as Error).message}`);
+  process.exit(1);
+}
+
 // Deterministic part runs once; only the labelling is repeated per run.
 const base = new Map<string, { meta: Meta; report: Report }>();
 for (const name of names) {
@@ -49,6 +58,8 @@ for (const name of names) {
 }
 
 const t0 = Date.now();
+const errorSamples = new Set<string>();
+let totalReviews = 0;
 let spent = 0, calls = 0, pt = 0, ct = 0, errors = 0, unclassified = 0, unclear = 0;
 const perRun: ReturnType<typeof score>[] = [];
 const allRows: Row[][] = [];
@@ -69,6 +80,8 @@ for (let r = 0; r < runs; r++) {
     pt += rep.llm?.promptTokens ?? 0;
     ct += rep.llm?.completionTokens ?? 0;
     errors += rep.llm?.errors ?? 0;
+    for (const m of rep.llm?.errorSamples ?? []) if (errorSamples.size < 3) errorSamples.add(m);
+    totalReviews += rep.functions.filter((f) => f.review).length;
     for (const [fn, truth] of Object.entries(meta.expect)) {
       const f = rep.functions.find((x) => x.name === fn);
       const changed = f?.status === "changed" || f?.status === "removed";
@@ -81,6 +94,12 @@ for (let r = 0; r < runs; r++) {
   allRows.push(rows);
   perRun.push(score(rows));
   console.log(`run ${r + 1}/${runs}: recall ${perRun[r]!.recall.toFixed(0)}%  precision ${perRun[r]!.precision.toFixed(0)}%  spent $${spent.toFixed(4)}`);
+}
+
+if (totalReviews && errors / totalReviews >= 0.2) {
+  console.error(`INVALID RUN for ${llm.model}: ${errors} of ${totalReviews} reviews failed; results not saved.`);
+  for (const m of errorSamples) console.error(`  sample error: ${m}`);
+  process.exit(1);
 }
 
 const mean = (f: (s: ReturnType<typeof score>) => number) => perRun.reduce((a, s) => a + f(s), 0) / perRun.length;
@@ -102,7 +121,7 @@ const out = {
   runs,
   incomplete: unclassified > 0,
   summary,
-  usage: { calls, promptTokens: pt, completionTokens: ct, costUsd: spent, errors, unclear, unclassified, wallMs: Date.now() - t0 },
+  usage: { errorSamples: [...errorSamples], calls, promptTokens: pt, completionTokens: ct, costUsd: spent, errors, unclear, unclassified, wallMs: Date.now() - t0 },
   perRun,
   rows: allRows,
 };

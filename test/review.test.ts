@@ -134,3 +134,14 @@ describe("review pipeline", () => {
     expect(a[1]!.content).not.toEqual(b[1]!.content);
   });
 });
+
+describe("failure reporting", () => {
+  it("records sample error messages so a broken key is diagnosable", async () => {
+    handler = () => ({ content: '{"error":"User not found."}', status: 401 });
+    const { d, o, n } = pair("export const f = (x: number) => x;", "export const f = (x: number) => x + 1;");
+    const r = await reviewFiles(o, n, { intent: "x", llm: cfg() });
+    expect(r.llm!.errorSamples![0]).toContain("401");
+    expect(JSON.stringify(r)).not.toContain("sk-test");
+    rmSync(d, { recursive: true });
+  });
+});

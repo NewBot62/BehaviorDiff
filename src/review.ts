@@ -30,6 +30,7 @@ export async function classifyReport(report: Report, oldFile: string, newFile: s
   const newSrc = sourcesOf(newFile);
   const usage = emptyUsage();
   let errors = 0;
+  const errorSamples: string[] = [];
   let skipped = 0;
   const maxCost = opts.maxCostUsd ?? 0.05;
   const queue = report.functions.filter((f) => f.status === "changed" || f.status === "removed");
@@ -54,7 +55,9 @@ export async function classifyReport(report: Report, oldFile: string, newFile: s
         addUsage(usage, r.usage);
       } catch (e) {
         errors++;
-        f.review = { verdict: "unclear", reason: `LLM error: ${(e as Error).message}`.slice(0, 300) };
+        const msg = (e as Error).message.slice(0, 300);
+        if (errorSamples.length < 3 && !errorSamples.includes(msg)) errorSamples.push(msg);
+        f.review = { verdict: "unclear", reason: `LLM error: ${msg}` };
       }
     }
   };
@@ -64,7 +67,7 @@ export async function classifyReport(report: Report, oldFile: string, newFile: s
     ...report,
     intent: opts.intent,
     attention,
-    llm: { model: opts.llm.model, calls: usage.calls, errors, promptTokens: usage.promptTokens, completionTokens: usage.completionTokens, costUsd: usage.costUsd, skipped },
+    llm: { model: opts.llm.model, calls: usage.calls, errors, ...(errorSamples.length ? { errorSamples } : {}), promptTokens: usage.promptTokens, completionTokens: usage.completionTokens, costUsd: usage.costUsd, skipped },
   };
 }
 

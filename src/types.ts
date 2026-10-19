@@ -33,6 +33,8 @@ export interface LlmSummary {
   promptTokens: number;
   completionTokens: number;
   costUsd: number;
+  /** first distinct error messages (never contain the API key) */
+  errorSamples?: string[];
   /** functions not reviewed because the spend cap or function cap was hit */
   skipped: number;
 }
