@@ -3,13 +3,13 @@
   "provider": "nvidia",
   "label": "openai/gpt-oss-20b",
   "suite": "hard",
-  "date": "2026-10-19T12:38:14.721Z",
+  "date": "2026-10-19T17:32:37.571Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 90.47619047619048,
+    "recall": 85.71428571428571,
     "precision": 100,
-    "f1": 94.87179487179486,
+    "f1": 92.3076923076923,
     "intendedFlagged": 0,
     "intendedTotal": 5,
     "refactorsFlagged": 0,
@@ -19,13 +19,13 @@
   "usage": {
     "errorSamples": [],
     "calls": 36,
-    "promptTokens": 23637,
-    "completionTokens": 9039,
+    "promptTokens": 27258,
+    "completionTokens": 9917,
     "costUsd": 0,
     "errors": 0,
     "unclear": 2,
     "unclassified": 0,
-    "wallMs": 194445
+    "wallMs": 306640
   },
   "perRun": [
     {
@@ -45,7 +45,7 @@
         "of": 2
       },
       "missed": [
-        "h-source-only-maxlen-HARD:isValidUsername"
+        "h-source-only-truncation-HARD:normalizePhone"
       ]
     },
     {
@@ -71,11 +71,11 @@
     {
       "functions": 14,
       "regressions": 7,
-      "caught": 7,
-      "recall": 100,
+      "caught": 6,
+      "recall": 85.71428571428571,
       "precision": 100,
-      "f1": 100,
-      "flagged": 7,
+      "f1": 92.30769230769229,
+      "flagged": 6,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 5
@@ -84,7 +84,9 @@
         "flagged": 0,
         "of": 2
       },
-      "missed": []
+      "missed": [
+        "h-source-only-maxlen-HARD:isValidUsername"
+      ]
     }
   ],
   "rows": [
@@ -168,15 +170,113 @@
         "case": "h-source-only-maxlen-HARD",
         "fn": "isValidUsername",
         "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "h-source-only-truncation-HARD",
         "fn": "normalizePhone",
         "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-unrelated-description",
+        "fn": "isAdult",
+        "truth": "unintended",
         "flagged": true,
         "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "h-empty-cart-intended",
+        "fn": "maxPrice",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-error-message-intended",
+        "fn": "charge",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-inject-comment",
+        "fn": "shortId",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-inject-description",
+        "fn": "formatId",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-mutation-intended",
+        "fn": "sortAsc",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-no-functional-changes",
+        "fn": "taxOf",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-nullish-explicit-intended",
+        "fn": "label",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "oldHelper",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "clampPct",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "legacyFormat",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "format",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-source-only-maxlen-HARD",
+        "fn": "isValidUsername",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-source-only-truncation-HARD",
+        "fn": "normalizePhone",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-unrelated-description",
@@ -266,106 +366,8 @@
         "case": "h-source-only-maxlen-HARD",
         "fn": "isValidUsername",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "h-source-only-truncation-HARD",
-        "fn": "normalizePhone",
-        "truth": "unintended",
         "flagged": false,
         "verdict": "intended"
-      },
-      {
-        "case": "h-unrelated-description",
-        "fn": "isAdult",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      }
-    ],
-    [
-      {
-        "case": "h-empty-cart-intended",
-        "fn": "maxPrice",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "h-error-message-intended",
-        "fn": "charge",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "h-inject-comment",
-        "fn": "shortId",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "h-inject-description",
-        "fn": "formatId",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "h-mutation-intended",
-        "fn": "sortAsc",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "h-no-functional-changes",
-        "fn": "taxOf",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "h-nullish-explicit-intended",
-        "fn": "label",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "h-removed-accidental",
-        "fn": "oldHelper",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "h-removed-accidental",
-        "fn": "clampPct",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "h-removed-intended",
-        "fn": "legacyFormat",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "h-removed-intended",
-        "fn": "format",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "h-source-only-maxlen-HARD",
-        "fn": "isValidUsername",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
       },
       {
         "case": "h-source-only-truncation-HARD",

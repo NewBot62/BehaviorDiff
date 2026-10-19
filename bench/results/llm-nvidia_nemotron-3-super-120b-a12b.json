@@ -3,14 +3,14 @@
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
   "suite": "main",
-  "date": "2026-10-19T12:49:30.161Z",
+  "date": "2026-10-19T17:50:47.283Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
     "recall": 83.33333333333333,
-    "precision": 100,
-    "f1": 90.90909090909092,
-    "intendedFlagged": 0,
+    "precision": 93.93939393939394,
+    "f1": 88.27404479578392,
+    "intendedFlagged": 0.6666666666666666,
     "intendedTotal": 8,
     "refactorsFlagged": 0,
     "refactorsTotal": 10,
@@ -18,14 +18,14 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 58,
-    "promptTokens": 40579,
-    "completionTokens": 27556,
+    "calls": 66,
+    "promptTokens": 53106,
+    "completionTokens": 33494,
     "costUsd": 0,
     "errors": 0,
-    "unclear": 0,
+    "unclear": 3,
     "unclassified": 0,
-    "wallMs": 672004
+    "wallMs": 1068136
   },
   "perRun": [
     {
@@ -33,11 +33,11 @@
       "regressions": 12,
       "caught": 10,
       "recall": 83.33333333333333,
-      "precision": 100,
-      "f1": 90.9090909090909,
-      "flagged": 10,
+      "precision": 90.9090909090909,
+      "f1": 86.95652173913042,
+      "flagged": 11,
       "falseAlarmsOnIntended": {
-        "flagged": 0,
+        "flagged": 1,
         "of": 8
       },
       "falseAlarmsOnRefactors": {
@@ -75,11 +75,11 @@
       "regressions": 12,
       "caught": 10,
       "recall": 83.33333333333333,
-      "precision": 100,
-      "f1": 90.9090909090909,
-      "flagged": 10,
+      "precision": 90.9090909090909,
+      "f1": 86.95652173913042,
+      "flagged": 11,
       "falseAlarmsOnIntended": {
-        "flagged": 0,
+        "flagged": 1,
         "of": 8
       },
       "falseAlarmsOnRefactors": {
@@ -133,8 +133,8 @@
         "case": "int-page-size-cap",
         "fn": "paginate",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "int-parsebool-yes",
@@ -263,7 +263,7 @@
         "fn": "range",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "reg-slugify-trim",
@@ -535,8 +535,8 @@
         "case": "int-page-size-cap",
         "fn": "paginate",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "int-parsebool-yes",

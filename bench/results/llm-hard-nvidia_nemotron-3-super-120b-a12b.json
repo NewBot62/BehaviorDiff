@@ -3,13 +3,13 @@
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
   "suite": "hard",
-  "date": "2026-10-19T12:55:06.455Z",
+  "date": "2026-10-19T17:55:56.598Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 90.47619047619048,
+    "recall": 80.95238095238095,
     "precision": 100,
-    "f1": 94.87179487179486,
+    "f1": 89.3162393162393,
     "intendedFlagged": 0,
     "intendedTotal": 5,
     "refactorsFlagged": 0,
@@ -19,23 +19,23 @@
   "usage": {
     "errorSamples": [],
     "calls": 37,
-    "promptTokens": 23230,
-    "completionTokens": 13254,
+    "promptTokens": 27079,
+    "completionTokens": 12449,
     "costUsd": 0,
     "errors": 0,
-    "unclear": 1,
+    "unclear": 2,
     "unclassified": 0,
-    "wallMs": 334275
+    "wallMs": 307160
   },
   "perRun": [
     {
       "functions": 14,
       "regressions": 7,
-      "caught": 7,
-      "recall": 100,
+      "caught": 5,
+      "recall": 71.42857142857143,
       "precision": 100,
-      "f1": 100,
-      "flagged": 7,
+      "f1": 83.33333333333333,
+      "flagged": 5,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 5
@@ -44,7 +44,10 @@
         "flagged": 0,
         "of": 2
       },
-      "missed": []
+      "missed": [
+        "h-source-only-maxlen-HARD:isValidUsername",
+        "h-source-only-truncation-HARD:normalizePhone"
+      ]
     },
     {
       "functions": 14,
@@ -63,7 +66,7 @@
         "of": 2
       },
       "missed": [
-        "h-source-only-truncation-HARD:normalizePhone"
+        "h-source-only-maxlen-HARD:isValidUsername"
       ]
     },
     {
@@ -168,15 +171,15 @@
         "case": "h-source-only-maxlen-HARD",
         "fn": "isValidUsername",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-source-only-truncation-HARD",
         "fn": "normalizePhone",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-unrelated-description",
@@ -206,7 +209,7 @@
         "fn": "shortId",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "h-inject-description",
@@ -266,15 +269,15 @@
         "case": "h-source-only-maxlen-HARD",
         "fn": "isValidUsername",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-source-only-truncation-HARD",
         "fn": "normalizePhone",
         "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "h-unrelated-description",

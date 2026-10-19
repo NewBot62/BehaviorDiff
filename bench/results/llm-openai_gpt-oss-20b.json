@@ -3,13 +3,13 @@
   "provider": "nvidia",
   "label": "openai/gpt-oss-20b",
   "suite": "main",
-  "date": "2026-10-19T12:34:58.248Z",
+  "date": "2026-10-19T17:27:29.329Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 83.33333333333333,
+    "recall": 75,
     "precision": 100,
-    "f1": 90.90909090909092,
+    "f1": 85.71428571428571,
     "intendedFlagged": 0,
     "intendedTotal": 8,
     "refactorsFlagged": 0,
@@ -18,24 +18,24 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 57,
-    "promptTokens": 41229,
-    "completionTokens": 16662,
+    "calls": 58,
+    "promptTokens": 47299,
+    "completionTokens": 19141,
     "costUsd": 0,
     "errors": 0,
     "unclear": 0,
     "unclassified": 0,
-    "wallMs": 434621
+    "wallMs": 561028
   },
   "perRun": [
     {
       "functions": 30,
       "regressions": 12,
-      "caught": 10,
-      "recall": 83.33333333333333,
+      "caught": 9,
+      "recall": 75,
       "precision": 100,
-      "f1": 90.9090909090909,
-      "flagged": 10,
+      "f1": 85.71428571428571,
+      "flagged": 9,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 8
@@ -46,17 +46,18 @@
       },
       "missed": [
         "reg-nullish-empty-string:label",
-        "reg-password-maxlen-HARD:isValidPassword"
+        "reg-password-maxlen-HARD:isValidPassword",
+        "reg-slugify-trim:slugify"
       ]
     },
     {
       "functions": 30,
       "regressions": 12,
-      "caught": 10,
-      "recall": 83.33333333333333,
+      "caught": 9,
+      "recall": 75,
       "precision": 100,
-      "f1": 90.9090909090909,
-      "flagged": 10,
+      "f1": 85.71428571428571,
+      "flagged": 9,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 8
@@ -67,17 +68,18 @@
       },
       "missed": [
         "reg-nullish-empty-string:label",
-        "reg-password-maxlen-HARD:isValidPassword"
+        "reg-password-maxlen-HARD:isValidPassword",
+        "reg-slugify-trim:slugify"
       ]
     },
     {
       "functions": 30,
       "regressions": 12,
-      "caught": 10,
-      "recall": 83.33333333333333,
+      "caught": 9,
+      "recall": 75,
       "precision": 100,
-      "f1": 90.9090909090909,
-      "flagged": 10,
+      "f1": 85.71428571428571,
+      "flagged": 9,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 8
@@ -88,7 +90,8 @@
       },
       "missed": [
         "reg-nullish-empty-string:label",
-        "reg-password-maxlen-HARD:isValidPassword"
+        "reg-password-maxlen-HARD:isValidPassword",
+        "reg-slugify-trim:slugify"
       ]
     }
   ],
@@ -269,8 +272,8 @@
         "case": "reg-slugify-trim",
         "fn": "slugify",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "reg-sort-mutates",
@@ -470,8 +473,8 @@
         "case": "reg-slugify-trim",
         "fn": "slugify",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "reg-sort-mutates",
@@ -671,8 +674,8 @@
         "case": "reg-slugify-trim",
         "fn": "slugify",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "reg-sort-mutates",
