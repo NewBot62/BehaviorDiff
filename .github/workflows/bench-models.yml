@@ -38,7 +38,7 @@ concurrency: bench-models
 jobs:
   bench:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 240
     env:
       PROVIDER: ${{ inputs.provider }}
       NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
@@ -115,11 +115,13 @@ jobs:
             done
           } 2>&1 | tee bench/results/last-run.log
       - name: Leaderboard
+        if: always()
         run: |
           node dist/bench/leaderboard.js > /dev/null
           cat bench/results/LEADERBOARD.md >> "$GITHUB_STEP_SUMMARY"
           { echo; echo '### Run log'; echo '```'; tail -n 60 bench/results/last-run.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit results
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
