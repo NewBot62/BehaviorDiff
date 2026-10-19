@@ -9,8 +9,8 @@ const max = Number(process.argv[2] ?? 8);
 const provider = (process.argv.find((a) => a.startsWith("--provider=")) ?? "--provider=openrouter").split("=")[1];
 if (provider === "nvidia") {
   // build.nvidia.com: OpenAI-compatible catalog (needs the key to list). Text chat models only.
-  const key = process.env.LLM_API_KEY;
-  if (!key) throw new Error("LLM_API_KEY is required to list NVIDIA models");
+  const key = process.env.NVIDIA_API_KEY;
+  if (!key) throw new Error("NVIDIA_API_KEY is required to list NVIDIA models");
   const r = await fetch("https://integrate.api.nvidia.com/v1/models", { headers: { Authorization: `Bearer ${key}` } });
   if (!r.ok) throw new Error(`NVIDIA models endpoint HTTP ${r.status}`);
   const list = (await r.json()).data ?? [];

@@ -35,7 +35,7 @@ behaviordiff --base origin/main src/pricing.ts --format md
 **2. Intent review (optional LLM step).** A difference is only a problem if the author didn't mean it. Give the PR description and a model labels each *changed* function `intended`, `unintended` or `unclear`, listing the differences the description doesn't cover. The model never runs or compares code; it only labels differences the engine already observed. Unchanged functions cost nothing.
 
 ```
-export LLM_API_KEY=...        # never pass keys as flags
+export OPENROUTER_API_KEY=... # or NVIDIA_API_KEY, OPENAI_API_KEY, ... (named after --provider); LLM_API_KEY also works. Never pass keys as flags
 behaviordiff --base origin/main src/pricing.ts \
   --intent "Raise free-shipping threshold from 50 to 75" \
   --provider openrouter --model anthropic/claude-haiku-5.5

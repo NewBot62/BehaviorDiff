@@ -1,11 +1,11 @@
 name: bench-models
-# Manual run. Needs the repository secret LLM_API_KEY (an OpenRouter key).
+# Manual run. Needs the repository secret NVIDIA_API_KEY (provider nvidia) or OPENROUTER_API_KEY (provider openrouter).
 # Benchmarks several cheap models on bench/cases and commits bench/results/.
 on:
   workflow_dispatch:
     inputs:
       provider:
-        description: "Where the models run: openrouter (needs LLM_API_KEY secret) or nvidia (needs NVIDIA_API_KEY secret, build.nvidia.com)"
+        description: "Where the models run: openrouter (needs OPENROUTER_API_KEY secret) or nvidia (needs NVIDIA_API_KEY secret, build.nvidia.com)"
         type: choice
         options: [openrouter, nvidia]
         default: openrouter
@@ -41,7 +41,8 @@ jobs:
     timeout-minutes: 90
     env:
       PROVIDER: ${{ inputs.provider }}
-      LLM_API_KEY: ${{ inputs.provider == 'nvidia' && secrets.NVIDIA_API_KEY || secrets.LLM_API_KEY }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || secrets.LLM_API_KEY }}
       MODELS_INPUT: ${{ inputs.models }}
       MAX_MODELS: ${{ inputs.max_models }}
       RUNS: ${{ inputs.runs }}
@@ -58,15 +59,15 @@ jobs:
       - run: npm run build
       - name: Require API key
         run: |
-          if [ -z "$LLM_API_KEY" ]; then
-            if [ "$PROVIDER" = "nvidia" ]; then n=NVIDIA_API_KEY; else n=LLM_API_KEY; fi
+          if [ "$PROVIDER" = "nvidia" ]; then n=NVIDIA_API_KEY; else n=OPENROUTER_API_KEY; fi
+          if [ -z "${!n}" ]; then
             echo "::error::Repository secret $n is not set (Settings > Secrets and variables > Actions)."
             exit 1
           fi
       - name: Check key and account (one tiny call)
         run: |
           if [ "$PROVIDER" = "nvidia" ]; then
-            code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $LLM_API_KEY" https://integrate.api.nvidia.com/v1/models)
+            code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $NVIDIA_API_KEY" https://integrate.api.nvidia.com/v1/models)
             echo "NVIDIA key check: HTTP $code"
             if [ "$code" != "200" ]; then
               echo "::error::NVIDIA rejected the key (HTTP $code): $(head -c 300 /tmp/auth.json). Create a key at build.nvidia.com (it starts with nvapi-) and re-save the NVIDIA_API_KEY secret with no spaces or line breaks."
@@ -74,10 +75,10 @@ jobs:
             fi
             echo "models visible to this key: $(jq '.data | length' /tmp/auth.json)"
           else
-            code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $LLM_API_KEY" https://openrouter.ai/api/v1/auth/key)
+            code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $OPENROUTER_API_KEY" https://openrouter.ai/api/v1/auth/key)
             echo "OpenRouter key check: HTTP $code"
             if [ "$code" != "200" ]; then
-              echo "::error::OpenRouter rejected the key (HTTP $code): $(head -c 300 /tmp/auth.json). Re-create the key and re-save the LLM_API_KEY secret with no spaces or line breaks."
+              echo "::error::OpenRouter rejected the key (HTTP $code): $(head -c 300 /tmp/auth.json). Re-create the key and re-save the OPENROUTER_API_KEY secret with no spaces or line breaks."
               exit 1
             fi
             jq '{label: .data.label, limit: .data.limit, limit_remaining: .data.limit_remaining, usage: .data.usage, is_free_tier: .data.is_free_tier}' /tmp/auth.json

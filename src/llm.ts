@@ -65,9 +65,10 @@ export function resolveConfig(input: ConfigInput = {}, env: Record<string, strin
   const model = input.model ?? env.LLM_MODEL;
   if (!baseUrl) throw new Error(`no LLM endpoint: set --provider (${Object.keys(PROVIDERS).join("|")}) or --base-url / LLM_BASE_URL`);
   if (!model) throw new Error("no model: set --model or LLM_MODEL");
-  const apiKey = input.apiKey ?? env.LLM_API_KEY;
+  // provider-named variable first (OPENROUTER_API_KEY, NVIDIA_API_KEY, ...), then the generic one
+  const apiKey = input.apiKey ?? (provider ? env[`${provider.toUpperCase()}_API_KEY`] : undefined) ?? env.LLM_API_KEY;
   if (!apiKey && !/^https?:\/\/(localhost|127\.0\.0\.1)/.test(baseUrl)) {
-    throw new Error("no API key: set LLM_API_KEY (a local endpoint such as Ollama needs none)");
+    throw new Error(`no API key: set ${provider ? provider.toUpperCase() + "_API_KEY" : "LLM_API_KEY"} (a local endpoint such as Ollama needs none)`);
   }
   const priceIn = input.priceIn ?? (env.LLM_PRICE_IN ? Number(env.LLM_PRICE_IN) : undefined);
   const priceOut = input.priceOut ?? (env.LLM_PRICE_OUT ? Number(env.LLM_PRICE_OUT) : undefined);

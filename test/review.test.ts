@@ -47,6 +47,12 @@ describe("parseReview", () => {
 });
 
 describe("resolveConfig", () => {
+  it("reads the provider-named key first, then LLM_API_KEY", () => {
+    expect(resolveConfig({ provider: "nvidia", model: "m" }, { NVIDIA_API_KEY: "a", LLM_API_KEY: "b" }).apiKey).toBe("a");
+    expect(resolveConfig({ provider: "openrouter", model: "m" }, { OPENROUTER_API_KEY: "o", NVIDIA_API_KEY: "n" }).apiKey).toBe("o");
+    expect(resolveConfig({ provider: "nvidia", model: "m" }, { LLM_API_KEY: "b" }).apiKey).toBe("b");
+    expect(() => resolveConfig({ provider: "nvidia", model: "m" }, { OPENROUTER_API_KEY: "o" })).toThrow(/NVIDIA_API_KEY/);
+  });
   it("requires a key for remote endpoints but not localhost", () => {
     expect(() => resolveConfig({ provider: "openrouter", model: "m" }, {})).toThrow(/API key/);
     expect(resolveConfig({ provider: "ollama", model: "m" }, {}).baseUrl).toBe("http://localhost:11434/v1");
