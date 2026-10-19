@@ -26,6 +26,27 @@ Or compare a file against any git ref (e.g. in CI on a PR):
 behaviordiff --base origin/main src/pricing.ts --format md
 ```
 
+## Who it is for, and where it runs
+
+| You | Use | Needs a model? |
+|---|---|---|
+| Reviewing PRs (especially AI-written ones) | [GitHub Action](#github-action-pull-requests) | yes (cheap/free is fine) |
+| Refactoring | `behaviordiff --changed --expect-no-change` | no |
+| Before committing | `behaviordiff --staged` | no |
+| Upgrading a dependency | `behaviordiff --pkg lib@1.2 lib@1.3` | no |
+| Using a coding agent | [MCP server](docs/USAGE.md#coding-agents-mcp) | optional |
+
+Runs anywhere with Node 22+ and your dependencies installed (laptop, CI, container). Models: any OpenAI-compatible endpoint (OpenRouter, NVIDIA free endpoints, OpenAI, Groq, DeepSeek, ..., or a local Ollama). **Full guide with recipes for GitHub, GitLab, pre-commit, MCP, config file and privacy: [docs/USAGE.md](docs/USAGE.md).**
+
+```
+behaviordiff old.ts new.ts
+behaviordiff --changed                       # all modified files vs main
+behaviordiff --staged                        # pre-commit
+behaviordiff --pkg zod@3.22.0 zod@3.23.0     # what did this npm upgrade change?
+behaviordiff --changed --expect-no-change    # refactor gate (exit 1 if anything differs)
+behaviordiff --changed --intent-from-commits --provider nvidia --model openai/gpt-oss-20b
+```
+
 ## What it does
 
 **1. Deterministic engine (no LLM, no network).**
@@ -114,7 +135,7 @@ Honest notes on the benchmark:
 ## Limits (please read)
 
 - **Not a security sandbox.** Node's permission model blocks file writes and child processes, but not network access, and the code under test can read files you allow. Run it on code you'd run in your tests anyway, in CI or a container.
-- Exported **functions** only. Classes, methods and module-level side effects are not exercised yet.
+- Exported functions, objects of functions and classes (constructor, public methods, statics, public state) are exercised; private members, getters and module-level side effects are not.
 - Inputs are generated, not exhaustive. "No difference found" means none was found on the generated inputs, not proof of equivalence. Functions whose arguments need very specific shapes (parsers, domain strings) get low coverage; the report says so when nearly every input throws.
 - The clock and `Math.random` are frozen; other nondeterminism (network, `crypto`, timers) is not controlled.
 
