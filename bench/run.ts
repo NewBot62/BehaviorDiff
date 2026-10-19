@@ -7,8 +7,9 @@ import { score, type Row, type Truth } from "./score.js";
 
 interface Meta { title: string; description: string; expect: Record<string, Truth>; note?: string }
 
+const suite = process.argv.includes("--suite=hard") ? "hard" : "main";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bench");
-const casesDir = join(root, "cases");
+const casesDir = join(root, suite === "hard" ? "cases-hard" : "cases");
 const names = readdirSync(casesDir).sort();
 
 const rows: Row[] = [];
@@ -23,10 +24,10 @@ for (const name of names) {
 }
 
 const s = score(rows);
-console.log(`\nBaseline (deterministic, no LLM): ${s.functions} functions in ${names.length} cases`);
+console.log(`\nBaseline [${suite}] (deterministic, no LLM): ${s.functions} functions in ${names.length} cases`);
 console.log(`  regressions caught : ${s.caught}/${s.regressions}  (recall ${s.recall.toFixed(0)}%)`);
 console.log(`  precision          : ${s.precision.toFixed(0)}%  (${s.caught} real / ${s.flagged} flagged)`);
 console.log(`  flagged but intended : ${s.falseAlarmsOnIntended.flagged}/${s.falseAlarmsOnIntended.of}   <- LLM intent stage must clear these`);
 console.log(`  flagged refactors    : ${s.falseAlarmsOnRefactors.flagged}/${s.falseAlarmsOnRefactors.of}   <- should be 0`);
 if (s.missed.length) console.log(`  missed: ${s.missed.join(", ")}`);
-writeFileSync(join(root, "results", "baseline.json"), JSON.stringify({ summary: s, rows }, null, 2) + "\n");
+writeFileSync(join(root, "results", suite === "hard" ? "baseline-hard.json" : "baseline.json"), JSON.stringify({ summary: s, rows }, null, 2) + "\n");

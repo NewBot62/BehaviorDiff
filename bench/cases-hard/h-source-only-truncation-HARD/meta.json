@@ -1,0 +1,8 @@
+{
+  "title": "Prefix is intended; truncation to 10 digits is not (engine never sees long numbers)",
+  "description": "Prefix normalized phone numbers with the +33 country code.",
+  "expect": {
+    "normalizePhone": "unintended"
+  },
+  "note": "every generated input differs only by the intended prefix; the .slice(-10) collateral change is visible only in the source"
+}

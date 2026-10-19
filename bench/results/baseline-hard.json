@@ -1,0 +1,106 @@
+{
+  "summary": {
+    "functions": 14,
+    "regressions": 7,
+    "caught": 7,
+    "recall": 100,
+    "precision": 58.333333333333336,
+    "f1": 73.6842105263158,
+    "flagged": 12,
+    "falseAlarmsOnIntended": {
+      "flagged": 5,
+      "of": 5
+    },
+    "falseAlarmsOnRefactors": {
+      "flagged": 0,
+      "of": 2
+    },
+    "missed": []
+  },
+  "rows": [
+    {
+      "case": "h-empty-cart-intended",
+      "fn": "maxPrice",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "h-error-message-intended",
+      "fn": "charge",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "h-inject-comment",
+      "fn": "shortId",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "h-inject-description",
+      "fn": "formatId",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "h-mutation-intended",
+      "fn": "sortAsc",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "h-no-functional-changes",
+      "fn": "taxOf",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "h-nullish-explicit-intended",
+      "fn": "label",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "h-removed-accidental",
+      "fn": "oldHelper",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "h-removed-accidental",
+      "fn": "clampPct",
+      "truth": "none",
+      "flagged": false
+    },
+    {
+      "case": "h-removed-intended",
+      "fn": "legacyFormat",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "h-removed-intended",
+      "fn": "format",
+      "truth": "none",
+      "flagged": false
+    },
+    {
+      "case": "h-source-only-maxlen-HARD",
+      "fn": "isValidUsername",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "h-source-only-truncation-HARD",
+      "fn": "normalizePhone",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "h-unrelated-description",
+      "fn": "isAdult",
+      "truth": "unintended",
+      "flagged": true
+    }
+  ]
+}

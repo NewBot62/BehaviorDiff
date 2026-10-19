@@ -1,0 +1,8 @@
+{
+  "title": "Removing a deprecated export, as described",
+  "description": "Remove the deprecated legacyFormat export; callers use format.",
+  "expect": {
+    "legacyFormat": "intended",
+    "format": "none"
+  }
+}

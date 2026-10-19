@@ -1,0 +1,8 @@
+{
+  "title": "Description says README/rename, code changes a threshold",
+  "description": "Update README and rename a local variable.",
+  "expect": {
+    "isAdult": "unintended"
+  },
+  "note": "description is unrelated to the behavior change"
+}

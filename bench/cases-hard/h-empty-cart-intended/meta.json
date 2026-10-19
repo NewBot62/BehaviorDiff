@@ -1,0 +1,7 @@
+{
+  "title": "Explicit edge-case fix",
+  "description": "Return 0 for an empty cart instead of -Infinity.",
+  "expect": {
+    "maxPrice": "intended"
+  }
+}

@@ -18,6 +18,11 @@ on:
       runs:
         description: "Repeats per model (temperature 0, but providers vary)"
         default: "2"
+      suite:
+        description: "Which case set: main, hard, or both"
+        type: choice
+        options: [both, main, hard]
+        default: both
       free_only:
         description: "true = only free (:free) models. Works without credit; rate-limited, so use few models and runs=1."
         default: "false"
@@ -42,6 +47,7 @@ jobs:
       RUNS: ${{ inputs.runs }}
       MAX_COST: ${{ inputs.max_cost_per_model }}
       FREE_ONLY: ${{ inputs.free_only }}
+      SUITE: ${{ inputs.suite }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -76,8 +82,10 @@ jobs:
             fi
             jq '{label: .data.label, limit: .data.limit, limit_remaining: .data.limit_remaining, usage: .data.usage, is_free_tier: .data.is_free_tier}' /tmp/auth.json
           fi
-      - name: Refresh deterministic baseline
-        run: node dist/bench/run.js
+      - name: Refresh deterministic baselines
+        run: |
+          node dist/bench/run.js
+          node dist/bench/run.js --suite=hard
       - name: Choose models
         run: |
           if [ -n "$MODELS_INPUT" ]; then
@@ -98,7 +106,10 @@ jobs:
             echo "models: $(cat models.json)"
             for m in $(jq -r '.[]' models.json); do
               echo "=== $m"
-              node dist/bench/llm.js --provider "$PROVIDER" --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "FAILED: $m"
+              for su in $([ "$SUITE" = "both" ] && echo "main hard" || echo "$SUITE"); do
+                echo "--- suite: $su"
+                node dist/bench/llm.js --provider "$PROVIDER" --model "$m" --suite "$su" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "FAILED: $m ($su)"
+              done
             done
           } 2>&1 | tee bench/results/last-run.log
       - name: Leaderboard

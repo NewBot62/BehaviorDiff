@@ -1,0 +1,9 @@
+{
+  "title": "An export disappears although the PR is about something else",
+  "description": "Add a helper to clamp percentages.",
+  "expect": {
+    "oldHelper": "unintended",
+    "clampPct": "none"
+  },
+  "note": "clampPct is unchanged; oldHelper silently disappears"
+}

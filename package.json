@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && vitest run",
-    "bench": "npm run build && node dist/bench/run.js",
+    "bench": "npm run build && node dist/bench/run.js && node dist/bench/run.js --suite=hard",
     "bench:llm": "npm run build && node dist/bench/llm.js",
     "bench:leaderboard": "npm run build && node dist/bench/leaderboard.js"
   },

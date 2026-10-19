@@ -9,7 +9,7 @@ export interface GenCtx {
 }
 
 const BASE_NUMBERS = [0, 1, -1, 2, 3, 5, 10, 100, 0.5, -2.5, 1000];
-const BASE_STRINGS = ["", "a", "abc", "Hello World", "  padded  ", "123", "UPPER", "a,b,c", "ünï"];
+const BASE_STRINGS = ["", "a", "abc", "Hello World", "  padded  ", "123", "UPPER", "a,b,c", "ünï", "   ", "\t\n"];
 
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;

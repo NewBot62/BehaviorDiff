@@ -87,11 +87,26 @@ Deterministic baseline (every difference is flagged, no LLM):
 
 Read this as: the engine finds nearly every real regression and never cries wolf on a pure refactor, but because it can't see intent, 42% of what it flags is a change the author asked for. Closing that gap, cheaply, is the project's goal. A Phase 2 result only counts if precision rises clearly above this baseline at low recall loss, and the per-model cost is published with it.
 
-Model results: **not measured yet.** The harness is built and checked against stub servers (an always-"unintended" stub reproduces the baseline exactly; an always-"intended" stub scores 0% recall), but no real model has been run. Run `LLM_API_KEY=... npm run bench:llm -- --provider openrouter --model <id>` for one model, or trigger the *bench-models* workflow to compare several and commit `bench/results/LEADERBOARD.md`. Costs are measured from the provider's usage data, not estimated.
+### First model results (main suite, free NVIDIA endpoints, 1 run each)
+
+| model | recall | precision | intended changes wrongly flagged | wall time |
+|---|---|---|---|---|
+| baseline (no LLM) | 92% | 58% | 8 / 8 | - |
+| `openai/gpt-oss-20b` | 83% | 100% | 0 / 8 | 91 s |
+| `z-ai/glm-5.3` | 83% | 100% | 0 / 8 | 590 s |
+| `nvidia/nemotron-3-super-120b-a12b` | 75% | 100% | 0 / 8 | 242 s |
+| `google/diffusiongemma-26b-a4b-it` | 83% | 91% | 1 / 8 | 106 s |
+
+What this does and does not show:
+- The intent step works on this suite: three of four models cleared every intended change (precision 58% to 100%) while losing one regression (92% to 83%). The cost was $0 on free endpoints.
+- **It is a weak result statistically.** There are 12 regressions and 8 intended changes, one run per model, so one case moves a number by about 8 points. The 100% precision rests on 10 true positives; its 95% interval reaches down to roughly 70%. Do not rank models from this table.
+- All four models made the same mistake: `label()` changes `||` to `??` under the description "Modernize with nullish coalescing", and every model called the empty-string difference intended. The description names the mechanism, not the behavior, and models tend to accept a stated mechanism as the explanation. A paired case in the hard suite (`h-nullish-explicit-intended`) uses the same diff with a description that states the behavior.
+- One miss in every column (`reg-password-maxlen-HARD`) comes from the deterministic engine, not the models: no generated string has 64 characters, so the model was never asked.
+- The main suite is easy: descriptions are explicit and written by the author. The **hard suite** (`bench/cases-hard`) adds unrelated descriptions, prompt injection in the description and in a code comment, differences visible only in the source, and removed exports. It has not been run on any model yet.
 
 Honest notes on the benchmark:
 - The cases are small and written by the author, so they are *not* a measure of real-world accuracy. They are a regression harness and a fixed yardstick for comparing models. Real-PR cases (mined from public repositories) are planned.
-- After the first run, two **generic** weaknesses in input generation were fixed (arrays of records sharing a key; one large array). Those fixes were informed by seeing which cases failed. The first-run numbers were recall 83% and 7/8 intended flagged.
+- Input generation was improved three times after looking at failing cases: arrays of records sharing a key, one large array, and whitespace-only strings (the last after the hard suite's `isValidUsername` case slipped through). All three are generic edge cases, but they were found by looking at this benchmark, so the baseline numbers are not a clean held-out measurement. The first-ever run had recall 83% and 7/8 intended flagged.
 - `reg-password-maxlen-HARD` is a deliberate miss: the regression only appears for a 64-character string, which no generated input has. An LLM that reads the diff should catch it. If it doesn't, that is a result.
 
 ## Limits (please read)

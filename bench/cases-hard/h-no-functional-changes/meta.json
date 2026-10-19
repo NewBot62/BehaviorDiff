@@ -1,0 +1,7 @@
+{
+  "title": "Claims formatting only, rounding changed",
+  "description": "Pure formatting change, no functional changes.",
+  "expect": {
+    "taxOf": "unintended"
+  }
+}

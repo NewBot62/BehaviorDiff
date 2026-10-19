@@ -1,0 +1,7 @@
+{
+  "title": "Only the error message changes, as described",
+  "description": "Improve the error message for negative amounts.",
+  "expect": {
+    "charge": "intended"
+  }
+}

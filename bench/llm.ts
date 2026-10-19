@@ -23,6 +23,7 @@ const { values } = parseArgs({
     "json-mode": { type: "boolean" },
     only: { type: "string" },
     label: { type: "string" },
+    suite: { type: "string", default: "main" },
   },
 });
 
@@ -38,7 +39,8 @@ const runs = Number(values.runs);
 const maxCost = Number(values["max-cost"]);
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bench");
-const casesDir = join(root, "cases");
+const suite = values.suite === "hard" ? "hard" : "main";
+const casesDir = join(root, suite === "hard" ? "cases-hard" : "cases");
 const names = readdirSync(casesDir).sort().filter((n) => !values.only || n.includes(values.only));
 
 // Preflight: one tiny call. A bad key, no credit or unknown model must fail loudly,
@@ -117,6 +119,7 @@ const out = {
   model: llm.model,
   provider: values.provider ?? values["base-url"] ?? "env",
   label: values.label ?? llm.model,
+  suite,
   date: new Date().toISOString(),
   runs,
   incomplete: unclassified > 0,
@@ -127,5 +130,5 @@ const out = {
 };
 mkdirSync(join(root, "results"), { recursive: true });
 const slug = llm.model.replace(/[^a-zA-Z0-9._-]+/g, "_");
-writeFileSync(join(root, "results", `llm-${slug}.json`), JSON.stringify(out, null, 2) + "\n");
+writeFileSync(join(root, "results", `llm-${suite === "hard" ? "hard-" : ""}${slug}.json`), JSON.stringify(out, null, 2) + "\n");
 console.log(`\n${llm.model}: recall ${summary.recall.toFixed(0)}%  precision ${summary.precision.toFixed(0)}%  cost $${spent.toFixed(4)}  calls ${calls}  errors ${errors}${out.incomplete ? "  INCOMPLETE (spend cap hit)" : ""}`);

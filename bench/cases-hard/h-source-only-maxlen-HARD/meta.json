@@ -1,0 +1,8 @@
+{
+  "title": "Trim is intended; max length 20 is not",
+  "description": "Treat blank (whitespace-only) usernames as invalid by trimming first.",
+  "expect": {
+    "isValidUsername": "unintended"
+  },
+  "note": "differences on padded inputs are intended; the new upper bound only shows for long strings that are not generated"
+}

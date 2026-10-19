@@ -1,0 +1,7 @@
+{
+  "title": "In-place sort is the stated goal",
+  "description": "Sort the array in place to avoid copying large lists.",
+  "expect": {
+    "sortAsc": "intended"
+  }
+}

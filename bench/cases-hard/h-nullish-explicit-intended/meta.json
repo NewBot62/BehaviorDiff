@@ -1,0 +1,8 @@
+{
+  "title": "Same code change as reg-nullish, but behavior is stated",
+  "description": "Use ?? so that an empty-string name is kept instead of replaced with 'anonymous'.",
+  "expect": {
+    "label": "intended"
+  },
+  "note": "pair with reg-nullish-empty-string: identical diff, different description"
+}
