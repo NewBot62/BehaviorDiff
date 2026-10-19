@@ -4,8 +4,13 @@ name: bench-models
 on:
   workflow_dispatch:
     inputs:
+      provider:
+        description: "Where the models run: openrouter (needs LLM_API_KEY secret) or nvidia (needs NVIDIA_API_KEY secret, build.nvidia.com)"
+        type: choice
+        options: [openrouter, nvidia]
+        default: openrouter
       models:
-        description: "Comma-separated OpenRouter model ids. Empty = anchors + cheapest per vendor."
+        description: "Comma-separated model ids for the chosen provider. Empty = auto-pick."
         default: ""
       max_models:
         description: "How many models when auto-picking"
@@ -30,7 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      PROVIDER: ${{ inputs.provider }}
+      LLM_API_KEY: ${{ inputs.provider == 'nvidia' && secrets.NVIDIA_API_KEY || secrets.LLM_API_KEY }}
       MODELS_INPUT: ${{ inputs.models }}
       MAX_MODELS: ${{ inputs.max_models }}
       RUNS: ${{ inputs.runs }}
@@ -47,24 +53,37 @@ jobs:
       - name: Require API key
         run: |
           if [ -z "$LLM_API_KEY" ]; then
-            echo "::error::Repository secret LLM_API_KEY is not set (Settings > Secrets and variables > Actions)."
+            if [ "$PROVIDER" = "nvidia" ]; then n=NVIDIA_API_KEY; else n=LLM_API_KEY; fi
+            echo "::error::Repository secret $n is not set (Settings > Secrets and variables > Actions)."
             exit 1
           fi
-      - name: Check key and credit (one tiny call)
+      - name: Check key and account (one tiny call)
         run: |
-          code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $LLM_API_KEY" https://openrouter.ai/api/v1/auth/key)
-          echo "OpenRouter key check: HTTP $code"
-          if [ "$code" != "200" ]; then
-            echo "::error::OpenRouter rejected the key (HTTP $code): $(head -c 300 /tmp/auth.json). Re-create the key and re-save the LLM_API_KEY secret with no spaces or line breaks."
-            exit 1
+          if [ "$PROVIDER" = "nvidia" ]; then
+            code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $LLM_API_KEY" https://integrate.api.nvidia.com/v1/models)
+            echo "NVIDIA key check: HTTP $code"
+            if [ "$code" != "200" ]; then
+              echo "::error::NVIDIA rejected the key (HTTP $code): $(head -c 300 /tmp/auth.json). Create a key at build.nvidia.com (it starts with nvapi-) and re-save the NVIDIA_API_KEY secret with no spaces or line breaks."
+              exit 1
+            fi
+            echo "models visible to this key: $(jq '.data | length' /tmp/auth.json)"
+          else
+            code=$(curl -s -o /tmp/auth.json -w '%{http_code}' -H "Authorization: Bearer $LLM_API_KEY" https://openrouter.ai/api/v1/auth/key)
+            echo "OpenRouter key check: HTTP $code"
+            if [ "$code" != "200" ]; then
+              echo "::error::OpenRouter rejected the key (HTTP $code): $(head -c 300 /tmp/auth.json). Re-create the key and re-save the LLM_API_KEY secret with no spaces or line breaks."
+              exit 1
+            fi
+            jq '{label: .data.label, limit: .data.limit, limit_remaining: .data.limit_remaining, usage: .data.usage, is_free_tier: .data.is_free_tier}' /tmp/auth.json
           fi
-          jq '{label: .data.label, limit: .data.limit, limit_remaining: .data.limit_remaining, usage: .data.usage, is_free_tier: .data.is_free_tier}' /tmp/auth.json
       - name: Refresh deterministic baseline
         run: node dist/bench/run.js
       - name: Choose models
         run: |
           if [ -n "$MODELS_INPUT" ]; then
             echo "$MODELS_INPUT" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | grep -v '^$' | jq -R . | jq -s . > models.json
+          elif [ "$PROVIDER" = "nvidia" ]; then
+            node scripts/pick-models.mjs "$MAX_MODELS" --provider=nvidia > models.json
           elif [ "$FREE_ONLY" = "true" ]; then
             node scripts/pick-models.mjs "$MAX_MODELS" --free > models.json
           else
@@ -75,11 +94,11 @@ jobs:
         run: |
           mkdir -p bench/results
           {
-            CONC=4; [ "$FREE_ONLY" = "true" ] && CONC=1
+            CONC=4; { [ "$FREE_ONLY" = "true" ] || [ "$PROVIDER" = "nvidia" ]; } && CONC=1
             echo "models: $(cat models.json)"
             for m in $(jq -r '.[]' models.json); do
               echo "=== $m"
-              node dist/bench/llm.js --provider openrouter --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "FAILED: $m"
+              node dist/bench/llm.js --provider "$PROVIDER" --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "FAILED: $m"
             done
           } 2>&1 | tee bench/results/last-run.log
       - name: Leaderboard

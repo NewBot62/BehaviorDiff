@@ -44,6 +44,7 @@ export const PROVIDERS: Record<string, string> = {
   deepinfra: "https://api.deepinfra.com/v1/openai",
   groq: "https://api.groq.com/openai/v1",
   gemini: "https://generativelanguage.googleapis.com/v1beta/openai",
+  nvidia: "https://integrate.api.nvidia.com/v1", // build.nvidia.com (keys start with nvapi-)
   ollama: "http://localhost:11434/v1",
 };
 
@@ -78,6 +79,8 @@ export function resolveConfig(input: ConfigInput = {}, env: Record<string, strin
     ...(priceOut !== undefined ? { priceOutPerM: priceOut } : {}),
     ...(input.jsonMode ? { jsonMode: true } : {}),
     ...(provider === "openai" ? { openaiStyle: true } : {}),
+    // free / trial endpoints rate-limit hard: wait longer instead of failing
+    ...(provider === "nvidia" ? { maxAttempts: 6, retryCapMs: 30000 } : {}),
     headers: { "X-Title": "BehaviorDiff" },
   };
 }

@@ -50,6 +50,9 @@ describe("resolveConfig", () => {
   it("requires a key for remote endpoints but not localhost", () => {
     expect(() => resolveConfig({ provider: "openrouter", model: "m" }, {})).toThrow(/API key/);
     expect(resolveConfig({ provider: "ollama", model: "m" }, {}).baseUrl).toBe("http://localhost:11434/v1");
+    const nv = resolveConfig({ provider: "nvidia", model: "meta/llama-3.1-8b-instruct" }, { LLM_API_KEY: "nvapi-x" });
+    expect(nv.baseUrl).toBe("https://integrate.api.nvidia.com/v1");
+    expect(nv.maxAttempts).toBe(6);
     expect(resolveConfig({}, { LLM_PROVIDER: "deepseek", LLM_MODEL: "m", LLM_API_KEY: "k" }).baseUrl).toBe("https://api.deepseek.com");
   });
 });

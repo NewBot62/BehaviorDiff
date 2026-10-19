@@ -41,7 +41,7 @@ behaviordiff --base origin/main src/pricing.ts \
   --provider openrouter --model anthropic/claude-haiku-5.5
 ```
 
-Works with any OpenAI-compatible endpoint: `--provider openrouter|openai|deepseek|mistral|together|deepinfra|groq|gemini|ollama` or `--base-url`. Local models (Ollama, llama.cpp, vLLM) need no key and keep code on your machine. A per-run spend cap (`--max-cost`, default $0.05) stops the calls; remaining functions are reported as `unclassified`, never silently skipped.
+Works with any OpenAI-compatible endpoint: `--provider openrouter|openai|deepseek|mistral|together|deepinfra|groq|gemini|nvidia|ollama` or `--base-url`. Local models (Ollama, llama.cpp, vLLM) need no key and keep code on your machine. A per-run spend cap (`--max-cost`, default $0.05) stops the calls; remaining functions are reported as `unclassified`, never silently skipped.
 
 Exit code `1` when something needs attention, so it can gate CI.
 

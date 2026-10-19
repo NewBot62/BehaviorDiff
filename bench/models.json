@@ -1,8 +1,13 @@
 {
-  "note": "Anchors are always benchmarked. Verified present on OpenRouter on 2026-10-18; scripts/pick-models.mjs re-checks at run time and adds the cheapest model from other vendors.",
+  "note": "Anchors are always benchmarked. Verified present on OpenRouter on 2026-10-18; scripts/pick-models.mjs re-checks at run time and adds the cheapest model from other vendors. nvidia_anchors are best-effort IDs for build.nvidia.com; the picker keeps only those present in the live /v1/models list.",
   "anchors": [
     "anthropic/claude-haiku-5.5",
     "openai/gpt-6-luna",
     "deepseek/deepseek-v4.1-flash-1017"
+  ],
+  "nvidia_anchors": [
+    "meta/llama-3.3-70b-instruct",
+    "meta/llama-3.1-8b-instruct",
+    "qwen/qwen2.5-coder-32b-instruct"
   ]
 }
