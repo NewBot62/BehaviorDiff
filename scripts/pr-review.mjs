@@ -2,9 +2,9 @@
 // runs both versions, asks the model whether each difference matches the PR description,
 // and posts ONE comment (updated in place). Advisory by default.
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, dirname, join } from "node:path";
 
 const env = process.env;
 const MARKER = "<!-- behaviordiff-report -->";
@@ -35,7 +35,7 @@ try { sh("git", ["rev-parse", "--verify", remoteBase]); } catch { sh("git", ["fe
 const mergeBase = sh("git", ["merge-base", remoteBase, "HEAD"]);
 const files = sh("git", ["diff", "--name-only", "--diff-filter=M", `${mergeBase}...HEAD`])
   .split("\n")
-  .filter((f) => /\.(ts|tsx|mts|js|jsx|mjs)$/.test(f))
+  .filter((f) => /\.(ts|tsx|mts|js|jsx|mjs|cjs)$/.test(f))
   .filter((f) => !/(\.d\.ts$|\.test\.|\.spec\.|(^|\/)(node_modules|dist|build|__tests__|test|tests)\/)/.test(f))
   .slice(0, Number(env.BD_MAX_FILES ?? 15));
 
@@ -43,11 +43,29 @@ const tmp = mkdtempSync(join(tmpdir(), "bd-pr-"));
 const intentFile = join(tmp, "intent.txt");
 writeFileSync(intentFile, intent);
 
+/** Test files next to a source file: their literals make good generated inputs. */
+function seedsFor(f) {
+  const dir = dirname(f);
+  const base = basename(f).replace(/\.[^.]+$/, "");
+  const out = [];
+  for (const d of [dir, join(dir, "test"), join(dir, "tests"), join(dir, "__tests__"), "test", "tests"]) {
+    if (!existsSync(d)) continue;
+    let names = [];
+    try { names = readdirSync(d); } catch { continue; }
+    for (const n of names) {
+      if (new RegExp(`^${base}\\.(test|spec)\\.`).test(n) || (d !== dir && n.startsWith(base + ".")) || /^test\.(js|mjs|cjs|ts)$/.test(n)) out.push(join(d, n));
+    }
+  }
+  return [...new Set(out)].slice(0, 4);
+}
+
 const parts = [];
 let attention = 0;
 let cost = 0;
 for (const f of files) {
   const args = [cli, "--base", mergeBase, f, "--format", "json", "--intent-file", intentFile, "--provider", env.BD_PROVIDER || "openrouter", "--max-cost", env.BD_MAX_COST || "0.10"];
+  const seeds = seedsFor(f);
+  if (seeds.length) args.push("--seed", seeds.join(","));
   if (env.BD_MODEL) args.push("--model", env.BD_MODEL);
   if (env.BD_BASE_URL) args.push("--base-url", env.BD_BASE_URL);
   const r = spawnSync(process.execPath, args, { encoding: "utf8", env });

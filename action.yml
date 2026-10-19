@@ -12,7 +12,7 @@ inputs:
     description: Model id for the endpoint (for OpenRouter e.g. anthropic/claude-haiku-5.5).
     required: true
   provider:
-    description: openrouter | openai | deepseek | mistral | together | deepinfra | groq | gemini
+    description: openrouter | openai | deepseek | mistral | together | deepinfra | groq | gemini | nvidia
     default: openrouter
   base-url:
     description: Any OpenAI-compatible endpoint (overrides provider).
