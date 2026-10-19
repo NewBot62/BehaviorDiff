@@ -1,5 +1,7 @@
 # BehaviorDiff
 
+> **Status: experimental alpha.** The deterministic engine and the GitHub Action work end to end. The LLM "is this change intended?" step cuts noise but is not accurate enough to trust blindly (see [Benchmark](#benchmark)). Treat its comments as advice for a human reviewer.
+
 **Compare what two versions of your TypeScript/JavaScript code actually *do*, not what the diff looks like.**
 
 AI assistants now write a large share of committed code, and reviewers can't read it all. A diff shows changed lines; it doesn't show that `discount(100)` quietly went from `90` to `100`. BehaviorDiff runs the old and new version of each exported function on the same generated inputs and reports every observable difference: return values, thrown errors, input mutation, logged output, timeouts.
@@ -66,7 +68,7 @@ jobs:
           model: anthropic/claude-haiku-5.5
 ```
 
-It reviews modified TS/JS files, uses the PR title and body as the intent, and keeps one comment up to date. Use the plain `pull_request` event (not `pull_request_target`): the Action executes the PR's code in a runner, and fork PRs don't receive secrets, in which case it skips with a notice. Advisory unless you set `fail-on-attention: true`. The Action is new and has only been tested locally with a stub model, not yet on a live PR.
+It reviews modified TS/JS files, uses the PR title and body as the intent, and keeps one comment up to date. Use the plain `pull_request` event (not `pull_request_target`): the Action executes the PR's code in a runner, and fork PRs don't receive secrets, in which case it skips with a notice. Advisory unless you set `fail-on-attention: true`. The Action ran on a live pull request in this repository ([PR #1](https://github.com/NewBot62/BehaviorDiff/pull/1)): it accepted the described threshold change and flagged an unrelated `itemLabel` change. That is one example, not a measurement. It uses test files next to a changed file (`foo.test.ts`, `test.js`, `test/foo.*`) as extra input seeds.
 
 ## Benchmark
 
@@ -87,27 +89,27 @@ Deterministic baseline (every difference is flagged, no LLM):
 
 Read this as: the engine finds nearly every real regression and never cries wolf on a pure refactor, but because it can't see intent, 42% of what it flags is a change the author asked for. Closing that gap, cheaply, is the project's goal. A Phase 2 result only counts if precision rises clearly above this baseline at low recall loss, and the per-model cost is published with it.
 
-### First model results (main suite, free NVIDIA endpoints, 1 run each)
+### Model results (free NVIDIA endpoints, 3 runs each, averaged)
 
-| model | recall | precision | intended changes wrongly flagged | wall time |
-|---|---|---|---|---|
-| baseline (no LLM) | 92% | 58% | 8 / 8 | - |
-| `openai/gpt-oss-20b` | 83% | 100% | 0 / 8 | 91 s |
-| `z-ai/glm-5.3` | 83% | 100% | 0 / 8 | 590 s |
-| `nvidia/nemotron-3-super-120b-a12b` | 75% | 100% | 0 / 8 | 242 s |
-| `google/diffusiongemma-26b-a4b-it` | 83% | 91% | 1 / 8 | 106 s |
+Full tables with every model and suite: [bench/results/LEADERBOARD.md](bench/results/LEADERBOARD.md). Summary for the two models run on all three suites:
 
-What this does and does not show:
-- The intent step works on this suite: three of four models cleared every intended change (precision 58% to 100%) while losing one regression (92% to 83%). The cost was $0 on free endpoints.
-- **It is a weak result statistically.** There are 12 regressions and 8 intended changes, one run per model, so one case moves a number by about 8 points. The 100% precision rests on 10 true positives; its 95% interval reaches down to roughly 70%. Do not rank models from this table.
-- All four models made the same mistake: `label()` changes `||` to `??` under the description "Modernize with nullish coalescing", and every model called the empty-string difference intended. The description names the mechanism, not the behavior, and models tend to accept a stated mechanism as the explanation. A paired case in the hard suite (`h-nullish-explicit-intended`) uses the same diff with a description that states the behavior.
-- One miss in every column (`reg-password-maxlen-HARD`) comes from the deterministic engine, not the models: no generated string has 64 characters, so the model was never asked.
-- The main suite is easy: descriptions are explicit and written by the author. The **hard suite** (`bench/cases-hard`) adds unrelated descriptions, prompt injection in the description and in a code comment, differences visible only in the source, and removed exports. It has not been run on any model yet.
+| suite | baseline (no LLM) | `gpt-oss-20b` | `nemotron-3-super-120b` |
+|---|---|---|---|
+| main (29 synthetic cases) | recall 92%, precision 58% | 83% / 100% | 86% / 86% |
+| hard (12 synthetic cases: injection, unrelated descriptions) | 100% / 58% | 76% / 100% | 81% / 94% |
+| **real code (25 cases, untyped JS)** | 100% / **42%** | 90% / **60%** | 83% / **67%** |
+
+Cost: $0 (free endpoints). What this shows, honestly:
+- The LLM step helps: on real code it lifts precision from 42% to 60-67% while losing 10-17 points of recall. On the synthetic suites precision is near 100%, but those were written by the author and are easier.
+- **It is not mature accuracy.** On real code roughly 4 of 10 flagged changes are still noise, and 10-17% of real regressions are missed. Run-to-run noise is large: the same model and prompt gave hard-suite recall 90% in one batch and 76% in another. Do not rank models from these tables.
+- The real-code suite (`bench/cases-real`) has 25 cases from pretty-bytes, camelcase, ms and decamelize: 15 real commits with their real messages, 2 real regressions confirmed by later fixes in the same repositories (`pb-binary-REAL`, `cc-node6-REAL`), and 8 real commits with a regression injected by the author outside the described change (`*-MUT`). Only two real bugs exist in it; the recall figure mostly measures the injected ones. Some "intended" labels are debatable (e.g. `ms-months` also changes `365d` to `1y`, which the models flag).
+- A prompt tweak that treated "wrong-type calls that now throw" as intended raised real-code precision by 4-7 points but cost 4-9 points of recall elsewhere, so it was reverted.
+- The deterministic engine had to learn untyped JavaScript to get here: it reads option keys from the function body, infers number/string parameters from their use, understands `module.exports`, and can take literals from test files (`--seed`, used automatically by the Action). Before that, it found almost none of the real bug fixes. Those changes were driven by looking at this benchmark, so the engine numbers are not a clean held-out measurement.
 
 Honest notes on the benchmark:
-- The cases are small and written by the author, so they are *not* a measure of real-world accuracy. They are a regression harness and a fixed yardstick for comparing models. Real-PR cases (mined from public repositories) are planned.
-- Input generation was improved three times after looking at failing cases: arrays of records sharing a key, one large array, and whitespace-only strings (the last after the hard suite's `isValidUsername` case slipped through). All three are generic edge cases, but they were found by looking at this benchmark, so the baseline numbers are not a clean held-out measurement. The first-ever run had recall 83% and 7/8 intended flagged.
-- `reg-password-maxlen-HARD` is a deliberate miss: the regression only appears for a 64-character string, which no generated input has. An LLM that reads the diff should catch it. If it doesn't, that is a result.
+- Synthetic cases are small and author-written; they are a regression harness and a fixed yardstick, not real-world accuracy.
+- `reg-password-maxlen-HARD` is a deliberate miss for the engine (needs a 64-character string).
+- Wrong-type inputs (e.g. `fixedWidth: 'en'`) create "now throws" differences that the models often flag even though they are a normal consequence of adding an option. This is a known source of false alarms.
 
 ## Limits (please read)
 

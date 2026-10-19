@@ -1,6 +1,6 @@
 # Phase 2: intent classification with cheap, swappable models
 
-**Status:** implemented and tested against stub servers. Not yet run against real models; that is the next step and needs an API key (`LLM_API_KEY` repository secret). Model candidates are chosen at run time from OpenRouter's live catalog by `scripts/pick-models.mjs` (cheapest per vendor, plus the anchors in `bench/models.json`) so no stale IDs are baked in.
+**Status:** implemented and run on real models (free NVIDIA endpoints) over three suites and on a live PR; see README and bench/results/LEADERBOARD.md. API keys are provider-named repository secrets (`NVIDIA_API_KEY`, `OPENROUTER_API_KEY`). Model candidates are chosen at run time from OpenRouter's live catalog by `scripts/pick-models.mjs` (cheapest per vendor, plus the anchors in `bench/models.json`) so no stale IDs are baked in.
 
 
 ## Goal
