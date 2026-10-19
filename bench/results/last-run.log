@@ -1,8 +1,14 @@
 models: [
-  "openai/gpt-oss-20b"
+  "nvidia/nemotron-3-super-120b-a12b",
+  "meta/llama-3.3-70b-instruct"
 ]
-=== openai/gpt-oss-20b
+=== nvidia/nemotron-3-super-120b-a12b
 --- suite: hard
-run 1/1: recall 57%  precision 100%  spent $0.0000
+run 1/1: recall 86%  precision 100%  spent $0.0000
 
-openai/gpt-oss-20b: recall 57%  precision 100%  cost $0.0000  calls 12  errors 0
+nvidia/nemotron-3-super-120b-a12b: recall 86%  precision 100%  cost $0.0000  calls 12  errors 0
+=== meta/llama-3.3-70b-instruct
+--- suite: hard
+PREFLIGHT FAILED for meta/llama-3.3-70b-instruct: LLM HTTP 410: {"type":"about:blank","title":"Gone","status":410,"detail":"The model 'meta/llama-3.3-70b-instruct' has reached its end of life on 2026-08-26T09:00:00Z and is no longer available."}
+
+FAILED: meta/llama-3.3-70b-instruct (hard)
