@@ -3,13 +3,13 @@
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
   "suite": "real",
-  "date": "2026-10-19T17:16:38.085Z",
+  "date": "2026-10-19T19:20:34.746Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 85.71428571428571,
-    "precision": 68.31785345717235,
-    "f1": 75.98566308243727,
+    "recall": 83.33333333333333,
+    "precision": 67.32026143790848,
+    "f1": 74.46236559139786,
     "intendedFlagged": 5.666666666666667,
     "intendedTotal": 19,
     "refactorsFlagged": 0,
@@ -18,14 +18,14 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 119,
-    "promptTokens": 158550,
-    "completionTokens": 72916,
+    "calls": 114,
+    "promptTokens": 140227,
+    "completionTokens": 66012,
     "costUsd": 0,
     "errors": 0,
-    "unclear": 9,
+    "unclear": 7,
     "unclassified": 0,
-    "wallMs": 1974129
+    "wallMs": 1752846
   },
   "perRun": [
     {
@@ -45,20 +45,20 @@
         "of": 0
       },
       "missed": [
-        "ms-months-MUT:ms",
-        "ms-week-MUT:ms"
+        "ms-week-MUT:ms",
+        "pb-binary-REAL:default"
       ]
     },
     {
       "functions": 33,
       "regressions": 14,
-      "caught": 11,
-      "recall": 78.57142857142857,
-      "precision": 57.89473684210526,
-      "f1": 66.66666666666667,
-      "flagged": 19,
+      "caught": 12,
+      "recall": 85.71428571428571,
+      "precision": 66.66666666666667,
+      "f1": 75,
+      "flagged": 18,
       "falseAlarmsOnIntended": {
-        "flagged": 8,
+        "flagged": 6,
         "of": 19
       },
       "falseAlarmsOnRefactors": {
@@ -67,20 +67,19 @@
       },
       "missed": [
         "ms-week-MUT:ms",
-        "pb-binary-REAL:default",
-        "pb-space-option-MUT:default"
+        "pb-binary-REAL:default"
       ]
     },
     {
       "functions": 33,
       "regressions": 14,
-      "caught": 13,
-      "recall": 92.85714285714286,
-      "precision": 76.47058823529412,
-      "f1": 83.87096774193547,
+      "caught": 11,
+      "recall": 78.57142857142857,
+      "precision": 64.70588235294117,
+      "f1": 70.96774193548387,
       "flagged": 17,
       "falseAlarmsOnIntended": {
-        "flagged": 4,
+        "flagged": 6,
         "of": 19
       },
       "falseAlarmsOnRefactors": {
@@ -88,7 +87,9 @@
         "of": 0
       },
       "missed": [
-        "ms-week-MUT:ms"
+        "ms-months-MUT:ms",
+        "ms-week-MUT:ms",
+        "pb-binary-REAL:default"
       ]
     }
   ],
@@ -112,15 +113,15 @@
         "case": "cc-leading-underscore",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "cc-leading-underscore-MUT",
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unclear"
+        "verdict": "unintended"
       },
       {
         "case": "cc-locale",
@@ -168,22 +169,22 @@
         "case": "ms-months",
         "fn": "ms",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months-MUT",
         "fn": "format",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "ms-months-MUT",
         "fn": "ms",
         "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "ms-months-MUT",
@@ -245,8 +246,8 @@
         "case": "pb-binary-REAL",
         "fn": "default",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-bits",
@@ -259,8 +260,8 @@
         "case": "pb-fixedwidth",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-fixedwidth-MUT",
@@ -506,8 +507,8 @@
         "case": "pb-nbsp",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-nbsp-MUT",
@@ -520,8 +521,8 @@
         "case": "pb-rounding-boundary",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-signed",
@@ -541,8 +542,8 @@
         "case": "pb-space-option-MUT",
         "fn": "default",
         "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "pb-sub1-precision",
@@ -564,8 +565,8 @@
         "case": "cc-incorrect-camelization",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "cc-incorrect-camelization-MUT",
@@ -592,8 +593,8 @@
         "case": "cc-locale",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "cc-node6-REAL",
@@ -627,8 +628,8 @@
         "case": "ms-months",
         "fn": "format",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "ms-months",
@@ -648,8 +649,8 @@
         "case": "ms-months-MUT",
         "fn": "ms",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months-MUT",
@@ -711,8 +712,8 @@
         "case": "pb-binary-REAL",
         "fn": "default",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-bits",
@@ -725,8 +726,8 @@
         "case": "pb-fixedwidth",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "pb-fixedwidth-MUT",

@@ -3,13 +3,13 @@
   "provider": "nvidia",
   "label": "openai/gpt-oss-20b",
   "suite": "hard",
-  "date": "2026-10-19T17:32:37.571Z",
+  "date": "2026-10-19T18:11:06.169Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 85.71428571428571,
+    "recall": 76.19047619047619,
     "precision": 100,
-    "f1": 92.3076923076923,
+    "f1": 86.32478632478632,
     "intendedFlagged": 0,
     "intendedTotal": 5,
     "refactorsFlagged": 0,
@@ -19,23 +19,23 @@
   "usage": {
     "errorSamples": [],
     "calls": 36,
-    "promptTokens": 27258,
-    "completionTokens": 9917,
+    "promptTokens": 23982,
+    "completionTokens": 8999,
     "costUsd": 0,
     "errors": 0,
     "unclear": 2,
     "unclassified": 0,
-    "wallMs": 306640
+    "wallMs": 288300
   },
   "perRun": [
     {
       "functions": 14,
       "regressions": 7,
-      "caught": 6,
-      "recall": 85.71428571428571,
+      "caught": 5,
+      "recall": 71.42857142857143,
       "precision": 100,
-      "f1": 92.30769230769229,
-      "flagged": 6,
+      "f1": 83.33333333333333,
+      "flagged": 5,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 5
@@ -45,17 +45,18 @@
         "of": 2
       },
       "missed": [
+        "h-source-only-maxlen-HARD:isValidUsername",
         "h-source-only-truncation-HARD:normalizePhone"
       ]
     },
     {
       "functions": 14,
       "regressions": 7,
-      "caught": 6,
-      "recall": 85.71428571428571,
+      "caught": 5,
+      "recall": 71.42857142857143,
       "precision": 100,
-      "f1": 92.30769230769229,
-      "flagged": 6,
+      "f1": 83.33333333333333,
+      "flagged": 5,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 5
@@ -65,6 +66,7 @@
         "of": 2
       },
       "missed": [
+        "h-source-only-maxlen-HARD:isValidUsername",
         "h-source-only-truncation-HARD:normalizePhone"
       ]
     },
@@ -170,8 +172,8 @@
         "case": "h-source-only-maxlen-HARD",
         "fn": "isValidUsername",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-source-only-truncation-HARD",
@@ -268,8 +270,8 @@
         "case": "h-source-only-maxlen-HARD",
         "fn": "isValidUsername",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-source-only-truncation-HARD",

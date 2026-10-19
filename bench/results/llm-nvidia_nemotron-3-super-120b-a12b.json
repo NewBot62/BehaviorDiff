@@ -3,14 +3,14 @@
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
   "suite": "main",
-  "date": "2026-10-19T17:50:47.283Z",
+  "date": "2026-10-19T18:44:22.053Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 83.33333333333333,
-    "precision": 93.93939393939394,
-    "f1": 88.27404479578392,
-    "intendedFlagged": 0.6666666666666666,
+    "recall": 86.1111111111111,
+    "precision": 86.2859362859363,
+    "f1": 86.09661835748791,
+    "intendedFlagged": 1.6666666666666667,
     "intendedTotal": 8,
     "refactorsFlagged": 0,
     "refactorsTotal": 10,
@@ -18,14 +18,14 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 66,
-    "promptTokens": 53106,
-    "completionTokens": 33494,
+    "calls": 70,
+    "promptTokens": 50059,
+    "completionTokens": 34211,
     "costUsd": 0,
     "errors": 0,
-    "unclear": 3,
+    "unclear": 6,
     "unclassified": 0,
-    "wallMs": 1068136
+    "wallMs": 914433
   },
   "perRun": [
     {
@@ -54,11 +54,11 @@
       "regressions": 12,
       "caught": 10,
       "recall": 83.33333333333333,
-      "precision": 100,
-      "f1": 90.9090909090909,
-      "flagged": 10,
+      "precision": 83.33333333333333,
+      "f1": 83.33333333333333,
+      "flagged": 12,
       "falseAlarmsOnIntended": {
-        "flagged": 0,
+        "flagged": 2,
         "of": 8
       },
       "falseAlarmsOnRefactors": {
@@ -73,13 +73,13 @@
     {
       "functions": 30,
       "regressions": 12,
-      "caught": 10,
-      "recall": 83.33333333333333,
-      "precision": 90.9090909090909,
-      "f1": 86.95652173913042,
-      "flagged": 11,
+      "caught": 11,
+      "recall": 91.66666666666667,
+      "precision": 84.61538461538461,
+      "f1": 88.00000000000001,
+      "flagged": 13,
       "falseAlarmsOnIntended": {
-        "flagged": 1,
+        "flagged": 2,
         "of": 8
       },
       "falseAlarmsOnRefactors": {
@@ -87,7 +87,6 @@
         "of": 10
       },
       "missed": [
-        "reg-nullish-empty-string:label",
         "reg-password-maxlen-HARD:isValidPassword"
       ]
     }
@@ -263,266 +262,65 @@
         "fn": "range",
         "truth": "unintended",
         "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-slugify-trim",
+        "fn": "slugify",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-sort-mutates",
+        "fn": "sortByAge",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-throws-on-empty",
+        "fn": "initials",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-unique-keeps-last",
+        "fn": "uniqueById",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "int-backoff-cap",
+        "fn": "retryDelay",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-ellipsis",
+        "fn": "truncate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-free-shipping",
+        "fn": "shippingCost",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-greeting",
+        "fn": "greet",
+        "truth": "intended",
+        "flagged": true,
         "verdict": "unclear"
-      },
-      {
-        "case": "reg-slugify-trim",
-        "fn": "slugify",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-sort-mutates",
-        "fn": "sortByAge",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-throws-on-empty",
-        "fn": "initials",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-unique-keeps-last",
-        "fn": "uniqueById",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      }
-    ],
-    [
-      {
-        "case": "int-backoff-cap",
-        "fn": "retryDelay",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-ellipsis",
-        "fn": "truncate",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-free-shipping",
-        "fn": "shippingCost",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-greeting",
-        "fn": "greet",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-name-format",
-        "fn": "formatName",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-page-size-cap",
-        "fn": "paginate",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-parsebool-yes",
-        "fn": "parseBool",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-tax-canada",
-        "fn": "taxRate",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "ref-arrow-conversion",
-        "fn": "double",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-arrow-conversion",
-        "fn": "isOdd",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-classify",
-        "fn": "classify",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-full-name",
-        "fn": "fullName",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-group-by",
-        "fn": "groupBy",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-in-range",
-        "fn": "inRange",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-leap-year",
-        "fn": "isLeapYear",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-sum-positive",
-        "fn": "sumPositive",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-total",
-        "fn": "total",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "ref-unique",
-        "fn": "unique",
-        "truth": "none",
-        "flagged": false
-      },
-      {
-        "case": "reg-async-missing",
-        "fn": "lookup",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-average-empty",
-        "fn": "average",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-clamp-order",
-        "fn": "clamp",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-discount-boundary",
-        "fn": "discount",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-nullish-empty-string",
-        "fn": "label",
-        "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "reg-parsebool-case",
-        "fn": "parseBool",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-password-maxlen-HARD",
-        "fn": "isValidPassword",
-        "truth": "unintended",
-        "flagged": false
-      },
-      {
-        "case": "reg-range-fractional",
-        "fn": "range",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-slugify-trim",
-        "fn": "slugify",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-sort-mutates",
-        "fn": "sortByAge",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-throws-on-empty",
-        "fn": "initials",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "reg-unique-keeps-last",
-        "fn": "uniqueById",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      }
-    ],
-    [
-      {
-        "case": "int-backoff-cap",
-        "fn": "retryDelay",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-ellipsis",
-        "fn": "truncate",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-free-shipping",
-        "fn": "shippingCost",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "int-greeting",
-        "fn": "greet",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
       },
       {
         "case": "int-name-format",
@@ -666,6 +464,207 @@
         "truth": "unintended",
         "flagged": true,
         "verdict": "unintended"
+      },
+      {
+        "case": "reg-slugify-trim",
+        "fn": "slugify",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-sort-mutates",
+        "fn": "sortByAge",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-throws-on-empty",
+        "fn": "initials",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-unique-keeps-last",
+        "fn": "uniqueById",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "int-backoff-cap",
+        "fn": "retryDelay",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-ellipsis",
+        "fn": "truncate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-free-shipping",
+        "fn": "shippingCost",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-greeting",
+        "fn": "greet",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "int-name-format",
+        "fn": "formatName",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-page-size-cap",
+        "fn": "paginate",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "int-parsebool-yes",
+        "fn": "parseBool",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-tax-canada",
+        "fn": "taxRate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ref-arrow-conversion",
+        "fn": "double",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-arrow-conversion",
+        "fn": "isOdd",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-classify",
+        "fn": "classify",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-full-name",
+        "fn": "fullName",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-group-by",
+        "fn": "groupBy",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-in-range",
+        "fn": "inRange",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-leap-year",
+        "fn": "isLeapYear",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-sum-positive",
+        "fn": "sumPositive",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-total",
+        "fn": "total",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-unique",
+        "fn": "unique",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "reg-async-missing",
+        "fn": "lookup",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-average-empty",
+        "fn": "average",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-clamp-order",
+        "fn": "clamp",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-discount-boundary",
+        "fn": "discount",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-nullish-empty-string",
+        "fn": "label",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-parsebool-case",
+        "fn": "parseBool",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-password-maxlen-HARD",
+        "fn": "isValidPassword",
+        "truth": "unintended",
+        "flagged": false
+      },
+      {
+        "case": "reg-range-fractional",
+        "fn": "range",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "reg-slugify-trim",
