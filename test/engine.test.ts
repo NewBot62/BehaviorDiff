@@ -152,3 +152,32 @@ describe("git mode", () => {
     rmSync(d, { recursive: true, force: true });
   }, 60000);
 });
+
+describe("untyped JavaScript", () => {
+  it("probes option keys read from an untyped options parameter (CommonJS)", async () => {
+    const oldSrc = "module.exports = (n, options) => { options = Object.assign({big: false}, options); return String(n); };";
+    const newSrc = "module.exports = (n, options) => { options = Object.assign({big: false}, options); return options.big && n >= 1000 ? 'big' : String(n); };";
+    const { d, o, n } = pair(oldSrc, newSrc, "js");
+    const r = await compareFiles(o, n);
+    expect(get(r, "default").status).toBe("changed");
+    expect(get(r, "default").examples.some((e) => e.call.includes("big"))).toBe(true);
+    rmSync(d, { recursive: true });
+  });
+  it("infers a numeric parameter from its use and reaches magnitudes", async () => {
+    const oldSrc = "export const f = (x) => (x < 1e6 ? 'small' : 'small');";
+    const newSrc = "export const f = (x) => (x < 1e6 ? 'small' : 'large');";
+    const { d, o, n } = pair(oldSrc, newSrc, "js");
+    expect(get(await compareFiles(o, n), "f").status).toBe("changed");
+    rmSync(d, { recursive: true });
+  });
+  it("uses literals from seed files as extra inputs", async () => {
+    const oldSrc = "export const f = (s) => s.toLowerCase();";
+    const newSrc = "export const f = (s) => (/^q[a-z]+-\\d+$/.test(s) ? s.toUpperCase() : s.toLowerCase());";
+    const { d, o, n } = pair(oldSrc, newSrc, "js");
+    expect(get(await compareFiles(o, n), "f").status).toBe("unchanged"); // blind generation cannot guess the shape
+    const seed = join(d, "seed.js");
+    writeFileSync(seed, "test('x', () => f('qwerty-42'));");
+    expect(get(await compareFiles(o, n, { seedFiles: [seed] }), "f").status).toBe("changed");
+    rmSync(d, { recursive: true });
+  });
+});

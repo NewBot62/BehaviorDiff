@@ -8,8 +8,8 @@ export interface GenCtx {
   strings: string[];
 }
 
-const BASE_NUMBERS = [0, 1, -1, 2, 3, 5, 10, 100, 0.5, -2.5, 1000];
-const BASE_STRINGS = ["", "a", "abc", "Hello World", "  padded  ", "123", "UPPER", "a,b,c", "ünï", "   ", "\t\n"];
+const BASE_NUMBERS = [0, 1, -1, 2, 3, 5, 10, 100, 0.5, -2.5, 1000, 1234.5, 1536, 999999, 1e6, 1e9, 0.001, 0.1234];
+const BASE_STRINGS = ["", "a", "abc", "Hello World", "  padded  ", "123", "UPPER", "a,b,c", "ünï", "   ", "\t\n", "fooBar", "foo-bar", "foo_bar", "FooBar", "XMLHttpRequest", "foo2bar", "a1b2c3", "__foo", "$foo", "foo bar baz", "ÀÉÎ", "😀a", "foo.bar/baz", "1.5e3", "-5", "http://x.io/a?b=1"];
 
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
@@ -51,14 +51,14 @@ function numberPool(ctx: GenCtx): number[] {
 }
 
 function stringPool(ctx: GenCtx): string[] {
-  const extra: string[] = [];
-  for (const s of ctx.strings) {
-    extra.push(s);
+  // raw literals first (they are the most likely to hit a branch), then case/padding variants of the first few
+  const variants: string[] = [];
+  for (const s of ctx.strings.slice(0, 20)) {
     const up = s.toUpperCase();
-    if (up !== s) extra.push(up);
-    if (s.length) extra.push(` ${s} `);
+    if (up !== s) variants.push(up);
+    if (s.length) variants.push(` ${s} `);
   }
-  return uniq([...BASE_STRINGS, ...extra]).slice(0, 60);
+  return uniq([...BASE_STRINGS, ...ctx.strings, ...variants]).slice(0, 110);
 }
 
 export function valuesFor(shape: Shape, ctx: GenCtx, depth = 0): unknown[] {
@@ -128,11 +128,24 @@ export function valuesFor(shape: Shape, ctx: GenCtx, depth = 0): unknown[] {
       if (shape.props.every((p) => p.optional)) out.push({});
       return uniq(out);
     }
+    case "options": {
+      // one key at a time, then pairs: the cheapest way to reach every option branch
+      const vals: unknown[] = [true, false, 0, 1, 2, 3, "en", "x", null];
+      const out: Record<string, unknown>[] = [{}];
+      for (const k of shape.keys) for (const v of vals) out.push({ [k]: v });
+      for (let i = 0; i + 1 < shape.keys.length; i++) {
+        out.push({ [shape.keys[i]!]: true, [shape.keys[i + 1]!]: true });
+        out.push({ [shape.keys[i]!]: 2, [shape.keys[i + 1]!]: 1 });
+      }
+      if (shape.keys.length > 2) out.push(Object.fromEntries(shape.keys.map((k) => [k, true])));
+      return uniq(out);
+    }
     case "unknown":
     default: {
       return uniq([
         0, 1, -1, 2, 10, NaN, Infinity, "", "a", "abc", true, false, null, undefined, [], [1, 2, 3], {}, { a: 1 },
-        ...ctx.numbers.slice(0, 8), ...ctx.strings.slice(0, 8),
+        0.001, 0.1234, 1.5, 999, 1000, 1234.5, 999999, 1e6, 1e9, 1e15, -1000, 123456789n,
+        ...ctx.numbers.slice(0, 8), ...stringPool(ctx).slice(0, 70),
       ]);
     }
   }
@@ -183,17 +196,21 @@ export function generateInputs(sig: FnSig | undefined, arity: number, ctx: GenCt
 
   const maxLen = Math.max(...pools.map((p) => p.length));
   for (let i = 0; i < maxLen; i++) out.push(pick(pools.map(() => i)));
-  // one-at-a-time sweeps around three baselines: finds single-parameter boundaries
-  for (let base = 0; base < 3; base++) {
-    for (let k = 0; k < pools.length; k++) {
-      for (let i = 0; i < pools[k]!.length; i++) {
-        const idx = pools.map(() => base);
+  // One-at-a-time sweeps around several baselines (the first values plus seeded random ones):
+  // finds single-parameter boundaries and parameter interactions (e.g. a size x an option).
+  // Sweeps are interleaved so that truncation to `max` drops the same share of every parameter.
+  const rng = mulberry32(hash(seedName));
+  const baselines: number[][] = [pools.map(() => 0), pools.map(() => 1), ...Array.from({ length: 4 }, () => pools.map((p) => Math.floor(rng() * p.length)))];
+  for (let i = 0; i < maxLen; i++) {
+    for (const base of baselines) {
+      for (let k = 0; k < pools.length; k++) {
+        if (i >= pools[k]!.length) continue;
+        const idx = [...base];
         idx[k] = i;
         out.push(pick(idx));
       }
     }
   }
-  const rng = mulberry32(hash(seedName));
   let guard = 0;
   let res = uniq(out);
   while (res.length < max && guard++ < max * 4) {

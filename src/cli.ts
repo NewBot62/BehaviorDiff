@@ -10,9 +10,10 @@ const USAGE = `behaviordiff - compare the behavior of two versions of a TS/JS mo
 
 Options:
   --format text|md|json   output format (default text)
-  --max <n>               max generated inputs per function (default 300)
+  --max <n>               max generated inputs per function (default 400)
   --fn a,b                only these exported functions
   --timeout <ms>          per-call timeout (default 1500)
+  --seed <files>          comma-separated files (e.g. tests) whose literals are used as extra inputs
 
 Intent review (optional, uses an OpenAI-compatible LLM endpoint):
   --intent "<text>"       what the change is supposed to do (e.g. the PR description)
@@ -36,6 +37,7 @@ async function main(): Promise<number> {
       max: { type: "string" },
       fn: { type: "string" },
       timeout: { type: "string" },
+      seed: { type: "string" },
       intent: { type: "string" },
       "intent-file": { type: "string" },
       provider: { type: "string" },
@@ -52,6 +54,7 @@ async function main(): Promise<number> {
   const opts = {
     ...(values.max ? { maxInputs: Number(values.max) } : {}),
     ...(values.timeout ? { callTimeoutMs: Number(values.timeout) } : {}),
+    ...(values.seed ? { seedFiles: values.seed.split(",") } : {}),
     ...(values.fn ? { functions: values.fn.split(",") } : {}),
   };
   const intent = values.intent ?? (values["intent-file"] ? readFileSync(values["intent-file"], "utf8") : undefined);

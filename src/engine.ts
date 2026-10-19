@@ -174,7 +174,7 @@ async function bundleFile(entry: string, outfile: string): Promise<void> {
 }
 
 export async function compareFiles(oldFile: string, newFile: string, opts: CompareOptions = {}): Promise<Report> {
-  const maxInputs = opts.maxInputs ?? 300;
+  const maxInputs = opts.maxInputs ?? 400;
   const callMs = opts.callTimeoutMs ?? 1500;
   const maxExamples = opts.maxExamples ?? 5;
   const base: Report = { oldFile, newFile, functions: [], behaviorChanged: false };
@@ -200,9 +200,19 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
     }
     const oldA = analyze(readFileSync(oldFile, "utf8"), basename(oldFile));
     const newA = analyze(readFileSync(newFile, "utf8"), basename(newFile));
+    const seed = { numbers: [] as number[], strings: [] as string[] };
+    for (const f of opts.seedFiles ?? []) {
+      try {
+        const a = analyze(readFileSync(f, "utf8"), basename(f), { maxStrings: 120, maxNumbers: 60, maxStringLength: 60 });
+        seed.numbers.push(...a.numbers);
+        seed.strings.push(...a.strings);
+      } catch {
+        /* unreadable seed file: ignore */
+      }
+    }
     const ctx: GenCtx = {
-      numbers: [...new Set([...newA.numbers, ...oldA.numbers])].slice(0, 50),
-      strings: [...new Set([...newA.strings, ...oldA.strings])].slice(0, 40),
+      numbers: [...new Set([...newA.numbers, ...oldA.numbers, ...seed.numbers])].slice(0, 80),
+      strings: [...new Set([...newA.strings, ...oldA.strings, ...seed.strings])].slice(0, 150),
     };
 
     const names = [...new Set([...oldEx.map((e) => e.name), ...newEx.map((e) => e.name)])]

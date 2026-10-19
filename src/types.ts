@@ -71,6 +71,8 @@ export interface CompareOptions {
   maxInputs?: number;
   /** per-call timeout in ms (default 1500) */
   callTimeoutMs?: number;
+  /** extra files (typically tests) whose string/number literals become candidate inputs */
+  seedFiles?: string[];
   /** only these exported functions */
   functions?: string[];
   /** examples kept per function (default 5) */
