@@ -7,8 +7,9 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { chat, classifyReport, compareFiles, resolveConfig, type Report } from "../src/index.js";
 import { score, type Row, type Truth } from "./score.js";
+import { SUITES, caseFiles, readMeta, root, suiteOf } from "./suites.js";
 
-interface Meta { title: string; description: string; expect: Record<string, Truth>; note?: string }
+interface Meta { title: string; description: string; expect: Record<string, Truth>; note?: string; seed?: string[] }
 
 const { values } = parseArgs({
   options: {
@@ -38,9 +39,8 @@ const llm = resolveConfig({
 const runs = Number(values.runs);
 const maxCost = Number(values["max-cost"]);
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bench");
-const suite = values.suite === "hard" ? "hard" : "main";
-const casesDir = join(root, suite === "hard" ? "cases-hard" : "cases");
+const suite = suiteOf(values.suite);
+const casesDir = join(root, SUITES[suite].dir);
 const names = readdirSync(casesDir).sort().filter((n) => !values.only || n.includes(values.only));
 
 // Preflight: one tiny call. A bad key, no credit or unknown model must fail loudly,
@@ -55,8 +55,9 @@ try {
 // Deterministic part runs once; only the labelling is repeated per run.
 const base = new Map<string, { meta: Meta; report: Report }>();
 for (const name of names) {
-  const meta = JSON.parse(readFileSync(join(casesDir, name, "meta.json"), "utf8")) as Meta;
-  base.set(name, { meta, report: await compareFiles(join(casesDir, name, "old.ts"), join(casesDir, name, "new.ts")) });
+  const meta = readMeta<Meta>(join(casesDir, name));
+  const cf = caseFiles(join(casesDir, name), meta);
+  base.set(name, { meta, report: await compareFiles(cf.oldFile, cf.newFile, cf.opts) });
 }
 
 const t0 = Date.now();
@@ -70,7 +71,8 @@ for (let r = 0; r < runs; r++) {
   const rows: Row[] = [];
   for (const name of names) {
     const { meta, report } = base.get(name)!;
-    const rep = await classifyReport(structuredClone(report), join(casesDir, name, "old.ts"), join(casesDir, name, "new.ts"), {
+    const cf = caseFiles(join(casesDir, name), meta);
+    const rep = await classifyReport(structuredClone(report), cf.oldFile, cf.newFile, {
       intent: meta.description,
       llm,
       maxCostUsd: Math.max(maxCost - spent, 0),
@@ -130,5 +132,5 @@ const out = {
 };
 mkdirSync(join(root, "results"), { recursive: true });
 const slug = llm.model.replace(/[^a-zA-Z0-9._-]+/g, "_");
-writeFileSync(join(root, "results", `llm-${suite === "hard" ? "hard-" : ""}${slug}.json`), JSON.stringify(out, null, 2) + "\n");
+writeFileSync(join(root, "results", `llm-${SUITES[suite].prefix}${slug}.json`), JSON.stringify(out, null, 2) + "\n");
 console.log(`\n${llm.model}: recall ${summary.recall.toFixed(0)}%  precision ${summary.precision.toFixed(0)}%  cost $${spent.toFixed(4)}  calls ${calls}  errors ${errors}${out.incomplete ? "  INCOMPLETE (spend cap hit)" : ""}`);

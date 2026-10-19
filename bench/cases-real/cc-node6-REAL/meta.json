@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@8696b61: Require Node.js 6",
+  "description": "Require Node.js 6",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase 8696b61",
+  "note": "real regression: added an early return for /^[a-z\\d]+$/ that 81cc16a ('Fix regression with how numbers are treated') removed"
+}

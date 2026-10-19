@@ -19,10 +19,10 @@ on:
         description: "Repeats per model (temperature 0, but providers vary)"
         default: "2"
       suite:
-        description: "Which case set: main, hard, or both"
+        description: "Which case set: main, hard, real, or all"
         type: choice
-        options: [both, main, hard]
-        default: both
+        options: [all, both, main, hard, real]
+        default: all
       free_only:
         description: "true = only free (:free) models. Works without credit; rate-limited, so use few models and runs=1."
         default: "false"
@@ -87,6 +87,7 @@ jobs:
         run: |
           node dist/bench/run.js
           node dist/bench/run.js --suite=hard
+          node dist/bench/run.js --suite=real
       - name: Choose models
         run: |
           if [ -n "$MODELS_INPUT" ]; then
@@ -107,7 +108,7 @@ jobs:
             echo "models: $(cat models.json)"
             for m in $(jq -r '.[]' models.json); do
               echo "=== $m"
-              for su in $([ "$SUITE" = "both" ] && echo "main hard" || echo "$SUITE"); do
+              for su in $(case "$SUITE" in all) echo "main hard real";; both) echo "main hard";; *) echo "$SUITE";; esac); do
                 echo "--- suite: $su"
                 node dist/bench/llm.js --provider "$PROVIDER" --model "$m" --suite "$su" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "FAILED: $m ($su)"
               done

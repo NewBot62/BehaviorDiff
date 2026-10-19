@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@6f12d6d: A separator as input should return an empty string (#99)",
+  "description": "A separator as input should return an empty string (#99)",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase 6f12d6d",
+  "note": "real commit"
+}

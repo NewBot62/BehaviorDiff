@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@73df489: Add `fixedWidth` option for right-aligned output  [+ injected regression]",
+  "description": "Add `fixedWidth` option for right-aligned output\n\nFixes #58",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes 73df489 + mutation",
+  "note": "injected: unit boundary off by one (999 -> 1 kB). Description is the real commit's; the injected change is outside it."
+}

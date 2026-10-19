@@ -1,0 +1,15 @@
+{
+  "title": "ms@3ba274e: add support for months (#251)",
+  "description": "add support for months (#251)",
+  "expect": {
+    "format": "intended",
+    "ms": "intended"
+  },
+  "seed": [
+    "seed0.ts",
+    "seed1.ts",
+    "seed2.ts"
+  ],
+  "source": "ms 3ba274e",
+  "note": "real commit"
+}

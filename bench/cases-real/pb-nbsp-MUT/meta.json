@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@b637640: Add `nonBreakingSpace` option  [+ injected regression]",
+  "description": "Add `nonBreakingSpace` option\n\nFixes #80",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes b637640 + mutation",
+  "note": "injected: signed positives get a space instead of +. Description is the real commit's; the injected change is outside it."
+}

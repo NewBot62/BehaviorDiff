@@ -1,0 +1,15 @@
+{
+  "title": "ms@5e40ced: adds week format to fmtShort and fmtLong (#249)",
+  "description": "adds week format to fmtShort and fmtLong (#249)",
+  "expect": {
+    "format": "intended",
+    "ms": "intended"
+  },
+  "seed": [
+    "seed0.ts",
+    "seed1.ts",
+    "seed2.ts"
+  ],
+  "source": "ms 5e40ced",
+  "note": "real commit"
+}

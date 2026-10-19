@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@e7dccc9: Fix incorrect camelization (#112)",
+  "description": "Fix incorrect camelization (#112)",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase e7dccc9",
+  "note": "real commit"
+}

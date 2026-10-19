@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@af55eb9: Fix numbers less than 1 having excessive precision  [+ injected regression]",
+  "description": "Fix numbers less than 1 having excessive precision\n\nFixes #89",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes af55eb9 + mutation",
+  "note": "injected: default precision dropped from 3 to 2 significant digits. Description is the real commit's; the injected change is outside it."
+}

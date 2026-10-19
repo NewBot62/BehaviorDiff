@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@79b9a64: Preserve leading underscores and dollar signs  [+ injected regression]",
+  "description": "Preserve leading underscores and dollar signs",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase 79b9a64 + mutation",
+  "note": "injected: space is no longer treated as a word separator. Description is the real commit's; the injected change is outside it."
+}

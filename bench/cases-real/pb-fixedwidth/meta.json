@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@73df489: Add `fixedWidth` option for right-aligned output",
+  "description": "Add `fixedWidth` option for right-aligned output\n\nFixes #58",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes 73df489",
+  "note": "real commit"
+}

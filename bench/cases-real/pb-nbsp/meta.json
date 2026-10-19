@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@b637640: Add `nonBreakingSpace` option",
+  "description": "Add `nonBreakingSpace` option\n\nFixes #80",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes b637640",
+  "note": "real commit"
+}

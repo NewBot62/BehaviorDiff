@@ -1,0 +1,17 @@
+{
+  "title": "ms@5e40ced: adds week format to fmtShort and fmtLong (#249)  [+ injected regression]",
+  "description": "adds week format to fmtShort and fmtLong (#249)",
+  "expect": {
+    "format": "intended",
+    "ms": "unintended",
+    "parse": "unintended",
+    "parseStrict": "unintended"
+  },
+  "seed": [
+    "seed0.ts",
+    "seed1.ts",
+    "seed2.ts"
+  ],
+  "source": "ms 5e40ced + mutation",
+  "note": "injected: parse no longer accepts negative numbers. Description is the real commit's; the injected change is outside it."
+}

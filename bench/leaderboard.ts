@@ -14,13 +14,14 @@ const f0 = (n: number) => n.toFixed(0);
 const L = [
   "# Leaderboard",
   "",
-  "Known-truth benchmarks (`bench/cases`, `bench/cases-hard`). Each model labels the differences found by the deterministic engine, given the PR description. Higher precision and recall are better; flagged-intended and flagged-refactor should be 0. Cost is measured from provider usage data (0 for free tiers). `unclear` verdicts count as flagged.",
+  "Known-truth benchmarks (`bench/cases`, `bench/cases-hard`, `bench/cases-real`). Each model labels the differences found by the deterministic engine, given the PR description. Higher precision and recall are better; flagged-intended and flagged-refactor should be 0. Cost is measured from provider usage data (0 for free tiers). `unclear` verdicts count as flagged.",
   "",
 ];
 
 for (const [suite, title, file, blurb] of [
   ["main", "Main suite (29 cases)", "baseline.json", "Explicit descriptions; the easier set."],
   ["hard", "Hard suite (12 cases)", "baseline-hard.json", "Unrelated descriptions, prompt injection, source-only differences, removed exports."],
+  ["real", "Real-code suite (25 cases)", "baseline-real.json", "Untyped JavaScript from pretty-bytes, camelcase, ms and decamelize: real commits with their real messages; 2 real regressions confirmed by later fixes; 8 real commits with an injected regression outside the described change."],
 ] as const) {
   const entries = all.filter((e) => (e.suite ?? "main") === suite).sort((a, b) => b.summary.precision - a.summary.precision || b.summary.recall - a.summary.recall);
   if (!entries.length && !existsSync(join(dir, file))) continue;

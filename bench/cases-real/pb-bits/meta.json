@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@cb93e5b: Add `bits` option (#53)",
+  "description": "Add `bits` option (#53)",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes cb93e5b",
+  "note": "real commit"
+}

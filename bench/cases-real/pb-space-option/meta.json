@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@17863db: Add `space` option (#79)",
+  "description": "Add `space` option (#79)",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes 17863db",
+  "note": "real commit"
+}

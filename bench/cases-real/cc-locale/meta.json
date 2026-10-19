@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@a06c4d1: Add `locale` option (#75)",
+  "description": "Add `locale` option (#75)",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase a06c4d1",
+  "note": "real commit"
+}

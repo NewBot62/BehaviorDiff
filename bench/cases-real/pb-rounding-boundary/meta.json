@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@059c979: Fix rounding across unit boundaries",
+  "description": "Fix rounding across unit boundaries\n\nCloses #91",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes 059c979",
+  "note": "real commit"
+}

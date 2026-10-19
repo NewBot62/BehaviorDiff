@@ -1,0 +1,12 @@
+{
+  "title": "decamelize@26c7530: Fix handling of capitalized word which ends with a number (#23)",
+  "description": "Fix handling of capitalized word which ends with a number (#23)\n\nFixes #21",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "decamelize 26c7530",
+  "note": "real commit"
+}

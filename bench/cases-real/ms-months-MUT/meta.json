@@ -1,0 +1,17 @@
+{
+  "title": "ms@3ba274e: add support for months (#251)  [+ injected regression]",
+  "description": "add support for months (#251)",
+  "expect": {
+    "format": "intended",
+    "ms": "unintended",
+    "parse": "unintended",
+    "parseStrict": "unintended"
+  },
+  "seed": [
+    "seed0.ts",
+    "seed1.ts",
+    "seed2.ts"
+  ],
+  "source": "ms 3ba274e + mutation",
+  "note": "injected: empty-string guard removed. Description is the real commit's; the injected change is outside it."
+}

@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@4ef01f4: Add `binary` option (#60)",
+  "description": "Add `binary` option (#60)",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes 4ef01f4",
+  "note": "real regression: later fixed by 1333349 (binary+bits) and 246a046 (KiB unit); restoration confirmed on 28 inputs"
+}

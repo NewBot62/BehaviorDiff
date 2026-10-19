@@ -1,0 +1,12 @@
+{
+  "title": "decamelize@9808ad6: empty string separator",
+  "description": "empty string separator",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "decamelize 9808ad6",
+  "note": "real commit"
+}

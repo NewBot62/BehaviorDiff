@@ -1,0 +1,220 @@
+{
+  "summary": {
+    "functions": 33,
+    "regressions": 14,
+    "caught": 14,
+    "recall": 100,
+    "precision": 42.42424242424242,
+    "f1": 59.574468085106375,
+    "flagged": 33,
+    "falseAlarmsOnIntended": {
+      "flagged": 19,
+      "of": 19
+    },
+    "falseAlarmsOnRefactors": {
+      "flagged": 0,
+      "of": 0
+    },
+    "missed": []
+  },
+  "rows": [
+    {
+      "case": "cc-incorrect-camelization",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "cc-incorrect-camelization-MUT",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "cc-leading-underscore",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "cc-leading-underscore-MUT",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "cc-locale",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "cc-node6-REAL",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "cc-separator-empty",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "dc-empty-separator",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "dc-number-suffix",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-months",
+      "fn": "format",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-months",
+      "fn": "ms",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-months-MUT",
+      "fn": "format",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-months-MUT",
+      "fn": "ms",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "ms-months-MUT",
+      "fn": "parse",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "ms-months-MUT",
+      "fn": "parseStrict",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "ms-week",
+      "fn": "format",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-week",
+      "fn": "ms",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-week-MUT",
+      "fn": "format",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "ms-week-MUT",
+      "fn": "ms",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "ms-week-MUT",
+      "fn": "parse",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "ms-week-MUT",
+      "fn": "parseStrict",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "pb-binary-REAL",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "pb-bits",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-fixedwidth",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-fixedwidth-MUT",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "pb-nbsp",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-nbsp-MUT",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "pb-rounding-boundary",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-signed",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-space-option",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-space-option-MUT",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    },
+    {
+      "case": "pb-sub1-precision",
+      "fn": "default",
+      "truth": "intended",
+      "flagged": true
+    },
+    {
+      "case": "pb-sub1-precision-MUT",
+      "fn": "default",
+      "truth": "unintended",
+      "flagged": true
+    }
+  ]
+}

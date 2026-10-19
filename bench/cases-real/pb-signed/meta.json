@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@10fbba2: Add `signed` option (#41)",
+  "description": "Add `signed` option (#41)",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes 10fbba2",
+  "note": "real commit"
+}

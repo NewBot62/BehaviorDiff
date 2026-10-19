@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@e7dccc9: Fix incorrect camelization (#112)  [+ injected regression]",
+  "description": "Fix incorrect camelization (#112)",
+  "expect": {
+    "default": "unintended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase e7dccc9 + mutation",
+  "note": "injected: string input is no longer trimmed. Description is the real commit's; the injected change is outside it."
+}

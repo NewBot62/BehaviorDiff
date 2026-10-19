@@ -1,0 +1,12 @@
+{
+  "title": "pretty-bytes@af55eb9: Fix numbers less than 1 having excessive precision",
+  "description": "Fix numbers less than 1 having excessive precision\n\nFixes #89",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "pretty-bytes af55eb9",
+  "note": "real commit; message describes the change"
+}

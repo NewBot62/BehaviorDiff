@@ -1,0 +1,12 @@
+{
+  "title": "camelcase@79b9a64: Preserve leading underscores and dollar signs",
+  "description": "Preserve leading underscores and dollar signs",
+  "expect": {
+    "default": "intended"
+  },
+  "seed": [
+    "seed0.js"
+  ],
+  "source": "camelcase 79b9a64",
+  "note": "real commit"
+}
