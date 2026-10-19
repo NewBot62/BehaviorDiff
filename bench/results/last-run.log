@@ -1,7 +1,13 @@
-models: ["xingchen-agi/xing4.0-29b-a4b:free","nvidia/nemotron-3.5-super-vl:free"]
+models: ["xingchen-agi/xing4.0-29b-a4b:free","liquid/lfm-2.5-2.6b:free","nvidia/nemotron-3.5-lightning:free","poolside/laguna-s-2.1:free"]
 === xingchen-agi/xing4.0-29b-a4b:free
-PREFLIGHT FAILED for xingchen-agi/xing4.0-29b-a4b:free: LLM request failed after retries (HTTP 429)
+PREFLIGHT FAILED for xingchen-agi/xing4.0-29b-a4b:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
 FAILED: xingchen-agi/xing4.0-29b-a4b:free
-=== nvidia/nemotron-3.5-super-vl:free
-PREFLIGHT FAILED for nvidia/nemotron-3.5-super-vl:free: LLM request failed after retries (HTTP 429)
-FAILED: nvidia/nemotron-3.5-super-vl:free
+=== liquid/lfm-2.5-2.6b:free
+PREFLIGHT FAILED for liquid/lfm-2.5-2.6b:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
+FAILED: liquid/lfm-2.5-2.6b:free
+=== nvidia/nemotron-3.5-lightning:free
+PREFLIGHT FAILED for nvidia/nemotron-3.5-lightning:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
+FAILED: nvidia/nemotron-3.5-lightning:free
+=== poolside/laguna-s-2.1:free
+PREFLIGHT FAILED for poolside/laguna-s-2.1:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
+FAILED: poolside/laguna-s-2.1:free
