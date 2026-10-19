@@ -17,6 +17,10 @@ export interface LlmConfig {
   priceOutPerM?: number;
   headers?: Record<string, string>;
   fetchImpl?: typeof fetch;
+  /** retry tuning (free models are often rate-limited and need longer waits) */
+  maxAttempts?: number;
+  retryBaseMs?: number;
+  retryCapMs?: number;
 }
 
 export interface Usage {
@@ -92,8 +96,12 @@ export async function chat(cfg: LlmConfig, messages: Message[]): Promise<{ text:
   if (cfg.baseUrl.includes("openrouter.ai")) body.usage = { include: true }; // report real cost per call
 
   let lastErr = "";
-  for (let attempt = 0; attempt < 4; attempt++) {
-    if (attempt) await sleep(Math.min(8000, 1000 * 2 ** (attempt - 1)));
+  const free = cfg.model.endsWith(":free");
+  const attempts = cfg.maxAttempts ?? (free ? 6 : 4);
+  const baseMs = cfg.retryBaseMs ?? 1000;
+  const capMs = cfg.retryCapMs ?? (free ? 30000 : 8000);
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    if (attempt) await sleep(Math.min(capMs, baseMs * 2 ** (attempt - 1)));
     let res: Response;
     try {
       res = await f(`${cfg.baseUrl}/chat/completions`, {
@@ -111,9 +119,18 @@ export async function chat(cfg: LlmConfig, messages: Message[]): Promise<{ text:
       continue;
     }
     if (res.status === 429 || res.status >= 500) {
-      lastErr = `HTTP ${res.status}`;
+      let detail = "";
+      try {
+        const j = JSON.parse(await res.text());
+        detail = String(j?.error?.message ?? "").slice(0, 200).replace(cfg.apiKey ?? "\u0000", "***");
+        const prov = j?.error?.metadata?.provider_name;
+        if (prov) detail += ` [provider ${prov}]`;
+      } catch {
+        /* body not JSON */
+      }
+      lastErr = `HTTP ${res.status}${detail ? ": " + detail : ""}`;
       const ra = Number(res.headers.get("retry-after"));
-      if (ra > 0 && ra <= 20) await sleep(ra * 1000);
+      if (ra > 0 && ra <= 20) await sleep(Math.min(ra * 1000, capMs));
       continue;
     }
     const raw = await res.text();

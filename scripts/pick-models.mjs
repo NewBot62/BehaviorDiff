@@ -19,7 +19,8 @@ const textOut = (m) => m.architecture?.output_modalities?.join() === "text" || (
 if (free) {
   const fr = data
     .filter((m) => m.id.endsWith(":free") && Number(m.pricing?.prompt) === 0 && Number(m.pricing?.completion) === 0)
-    .filter((m) => textOut(m) && m.context_length >= 16000 && !/preview|beta|exp|guard|embed/i.test(m.id))
+    .filter((m) => textOut(m) && m.context_length >= 16000 && !/preview|beta|exp|guard|embed|-vl\b|vision|audio|omni|image/i.test(m.id))
+    .filter((m) => !m.architecture?.input_modalities || m.architecture.input_modalities.join() === "text")
     .sort((a, b) => (b.created ?? 0) - (a.created ?? 0));
   const vendors = new Set();
   const out = [];

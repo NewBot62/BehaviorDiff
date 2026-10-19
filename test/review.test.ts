@@ -145,3 +145,26 @@ describe("failure reporting", () => {
     rmSync(d, { recursive: true });
   });
 });
+
+describe("rate limits", () => {
+  it("retries 429 and succeeds; reports the provider message when it gives up", async () => {
+    let n = 0;
+    handler = () => (++n <= 2 ? { content: "", status: 429 } : { content: '{"verdict":"intended","reason":"ok"}' });
+    const { chat } = await import("../dist/src/index.js");
+    const ok = await chat({ ...cfg(), retryBaseMs: 1 }, [{ role: "user", content: "hi" }]);
+    expect(ok.text).toContain("intended");
+    expect(n).toBe(3);
+
+    const srv = createServer((q, s) => {
+      q.resume();
+      q.on("end", () => {
+        s.statusCode = 429;
+        s.end(JSON.stringify({ error: { message: "model is temporarily rate-limited upstream", metadata: { provider_name: "Acme" } } }));
+      });
+    });
+    await new Promise<void>((r) => srv.listen(0, "127.0.0.1", r));
+    const url = `http://127.0.0.1:${(srv.address() as AddressInfo).port}/v1`;
+    await expect(chat({ ...cfg(), baseUrl: url, retryBaseMs: 1, maxAttempts: 3 }, [{ role: "user", content: "hi" }])).rejects.toThrow(/rate-limited upstream \[provider Acme\]/);
+    srv.close();
+  });
+});
