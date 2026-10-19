@@ -13,6 +13,9 @@ on:
       runs:
         description: "Repeats per model (temperature 0, but providers vary)"
         default: "2"
+      free_only:
+        description: "true = only free (:free) models. Works without credit; rate-limited, so use few models and runs=1."
+        default: "false"
       max_cost_per_model:
         description: "Hard spend cap per model in USD"
         default: "0.50"
@@ -32,6 +35,7 @@ jobs:
       MAX_MODELS: ${{ inputs.max_models }}
       RUNS: ${{ inputs.runs }}
       MAX_COST: ${{ inputs.max_cost_per_model }}
+      FREE_ONLY: ${{ inputs.free_only }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -61,15 +65,18 @@ jobs:
         run: |
           if [ -n "$MODELS_INPUT" ]; then
             echo "$MODELS_INPUT" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | grep -v '^$' | jq -R . | jq -s . > models.json
+          elif [ "$FREE_ONLY" = "true" ]; then
+            node scripts/pick-models.mjs "$MAX_MODELS" --free > models.json
           else
             node scripts/pick-models.mjs "$MAX_MODELS" > models.json
           fi
           echo "Models:"; cat models.json
       - name: Run benchmark per model
         run: |
+          CONC=4; [ "$FREE_ONLY" = "true" ] && CONC=1
           for m in $(jq -r '.[]' models.json); do
             echo "::group::$m"
-            node dist/bench/llm.js --provider openrouter --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" || echo "::warning::benchmark failed for $m"
+            node dist/bench/llm.js --provider openrouter --model "$m" --runs "$RUNS" --max-cost "$MAX_COST" --concurrency "$CONC" || echo "::warning::benchmark failed for $m"
             echo "::endgroup::"
           done
       - name: Leaderboard
