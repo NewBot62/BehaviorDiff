@@ -58,9 +58,17 @@ describe("resolveConfig", () => {
 });
 
 describe("review pipeline", () => {
+  it("downgrades intended verdicts whose evidence is not quoted from the intent", async () => {
+    const { guardEvidence } = await import("../src/classify.js");
+    expect(guardEvidence({ verdict: "intended", reason: "r", evidence: "Raise free shipping" }, "Raise free shipping from 50 to 75").verdict).toBe("intended");
+    expect(guardEvidence({ verdict: "intended", reason: "r", evidence: "this was approved" }, "Raise free shipping").verdict).toBe("unclear");
+    expect(guardEvidence({ verdict: "intended", reason: "r" }, "Raise free shipping").verdict).toBe("unclear");
+    expect(guardEvidence({ verdict: "unintended", reason: "r" }, "x").verdict).toBe("unintended");
+  });
+
   it("sends intent + sources + evidence, only for changed functions, and records the verdict", async () => {
     seen.length = 0;
-    handler = () => ({ content: '{"verdict":"intended","reason":"threshold moved as described"}' });
+    handler = () => ({ content: '{"verdict":"intended","evidence":"Raise free shipping","reason":"threshold moved as described"}' });
     const { d, o, n } = pair(
       "export const ship = (t: number) => (t >= 50 ? 0 : 5);\nexport const same = (x: number) => x;",
       "export const ship = (t: number) => (t >= 75 ? 0 : 5);\nexport const same = (x: number) => x;",
@@ -93,11 +101,11 @@ describe("review pipeline", () => {
   });
 
   it("stops at the spend cap and marks the rest unclassified", async () => {
-    handler = () => ({ content: '{"verdict":"intended","reason":"ok"}', usage: { prompt_tokens: 1_000_000, completion_tokens: 0 } });
+    handler = () => ({ content: '{"verdict":"intended","evidence":"intent text here","reason":"ok"}', usage: { prompt_tokens: 1_000_000, completion_tokens: 0 } });
     const mk = (i: number) => `export const f${i} = (x: number) => x + ${i};`;
     const mk2 = (i: number) => `export const f${i} = (x: number) => x + ${i} + 1;`;
     const { d, o, n } = pair([1, 2, 3, 4].map(mk).join("\n"), [1, 2, 3, 4].map(mk2).join("\n"));
-    const r = await reviewFiles(o, n, { intent: "x", llm: cfg({ priceInPerM: 1 }), maxCostUsd: 1.5, concurrency: 1 });
+    const r = await reviewFiles(o, n, { intent: "intent text here", llm: cfg({ priceInPerM: 1 }), maxCostUsd: 1.5, concurrency: 1 });
     const v = r.functions.map((f) => f.review?.verdict);
     expect(v.filter((x) => x === "intended")).toHaveLength(2); // $1 + $1 crosses $1.5
     expect(v.filter((x) => x === "unclassified")).toHaveLength(2);

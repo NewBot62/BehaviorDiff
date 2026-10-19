@@ -22,6 +22,8 @@ export type Verdict = "intended" | "unintended" | "unclear" | "unclassified";
 export interface Review {
   verdict: Verdict;
   reason: string;
+  /** exact words from the intent that justify an "intended" verdict */
+  evidence?: string;
   /** differences the model says the stated intent does not cover */
   unexplained?: string[];
 }
