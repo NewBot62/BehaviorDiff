@@ -1,6 +1,6 @@
 # Leaderboard
 
-Known-truth benchmarks (`bench/cases`, `bench/cases-hard`). Each model labels the differences found by the deterministic engine, given the PR description. Higher precision and recall are better; flagged-intended and flagged-refactor should be 0. Cost is measured from provider usage data (0 for free tiers). `unclear` verdicts count as flagged.
+Known-truth benchmarks (`bench/cases`, `bench/cases-hard`, `bench/cases-real`). Each model labels the differences found by the deterministic engine, given the PR description. Higher precision and recall are better; flagged-intended and flagged-refactor should be 0. Cost is measured from provider usage data (0 for free tiers). `unclear` verdicts count as flagged.
 
 ## Main suite (29 cases)
 
@@ -23,5 +23,15 @@ Unrelated descriptions, prompt injection, source-only differences, removed expor
 | *baseline (no LLM)* | 100% | 58% | 5/5 | 0/2 | - | 0 | - | flags every difference |
 | `nvidia/nemotron-3-super-120b-a12b` | 90% | 100% | 0.0/5 | 0.0/2 | 3 | 0.0000 | 334 | 1 unclear |
 | `openai/gpt-oss-20b` | 90% | 100% | 0.0/5 | 0.0/2 | 3 | 0.0000 | 194 | 2 unclear |
+
+## Real-code suite (25 cases)
+
+Untyped JavaScript from pretty-bytes, camelcase, ms and decamelize: real commits with their real messages; 2 real regressions confirmed by later fixes; 8 real commits with an injected regression outside the described change.
+
+| Model | Recall | Precision | Intended flagged | Refactors flagged | Runs | Cost (USD) | Wall time (s) | Notes |
+|---|---|---|---|---|---|---|---|---|
+| *baseline (no LLM)* | 100% | 42% | 19/19 | 0/0 | - | 0 | - | flags every difference |
+| `nvidia/nemotron-3-super-120b-a12b` | 90% | 61% | 8.3/19 | 0.0/0 | 3 | 0.0000 | 2332 | 12 unclear |
+| `openai/gpt-oss-20b` | 90% | 59% | 9.0/19 | 0.0/0 | 3 | 0.0000 | 1166 | 9 unclear |
 
 Caveats: small hand-written suites (12 and 8-12 cases per class), so one case moves a metric by roughly 8 points and differences of a few points between models are noise. See README for limits.

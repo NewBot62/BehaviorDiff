@@ -1,0 +1,794 @@
+{
+  "model": "nvidia/nemotron-3-super-120b-a12b",
+  "provider": "nvidia",
+  "label": "nvidia/nemotron-3-super-120b-a12b",
+  "suite": "real",
+  "date": "2026-10-19T14:33:36.865Z",
+  "runs": 3,
+  "incomplete": false,
+  "summary": {
+    "recall": 90.47619047619048,
+    "precision": 60.77485380116959,
+    "f1": 72.53963786471526,
+    "intendedFlagged": 8.333333333333334,
+    "intendedTotal": 19,
+    "refactorsFlagged": 0,
+    "refactorsTotal": 0,
+    "regressions": 14
+  },
+  "usage": {
+    "errorSamples": [],
+    "calls": 119,
+    "promptTokens": 149411,
+    "completionTokens": 73391,
+    "costUsd": 0,
+    "errors": 0,
+    "unclear": 12,
+    "unclassified": 0,
+    "wallMs": 2331814
+  },
+  "perRun": [
+    {
+      "functions": 33,
+      "regressions": 14,
+      "caught": 13,
+      "recall": 92.85714285714286,
+      "precision": 65,
+      "f1": 76.47058823529412,
+      "flagged": 20,
+      "falseAlarmsOnIntended": {
+        "flagged": 7,
+        "of": 19
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 0
+      },
+      "missed": [
+        "ms-week-MUT:ms"
+      ]
+    },
+    {
+      "functions": 33,
+      "regressions": 14,
+      "caught": 12,
+      "recall": 85.71428571428571,
+      "precision": 63.1578947368421,
+      "f1": 72.72727272727273,
+      "flagged": 19,
+      "falseAlarmsOnIntended": {
+        "flagged": 7,
+        "of": 19
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 0
+      },
+      "missed": [
+        "cc-incorrect-camelization-MUT:default",
+        "ms-week-MUT:ms"
+      ]
+    },
+    {
+      "functions": 33,
+      "regressions": 14,
+      "caught": 13,
+      "recall": 92.85714285714286,
+      "precision": 54.166666666666664,
+      "f1": 68.42105263157895,
+      "flagged": 24,
+      "falseAlarmsOnIntended": {
+        "flagged": 11,
+        "of": 19
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 0
+      },
+      "missed": [
+        "ms-week-MUT:ms"
+      ]
+    }
+  ],
+  "rows": [
+    [
+      {
+        "case": "cc-incorrect-camelization",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "cc-incorrect-camelization-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-leading-underscore",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "cc-leading-underscore-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-locale",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-node6-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-separator-empty",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "dc-empty-separator",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "dc-number-suffix",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "ms-months",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-binary-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "pb-bits",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-fixedwidth",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-fixedwidth-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-nbsp",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-nbsp-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-rounding-boundary",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-signed",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-sub1-precision",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-sub1-precision-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "cc-incorrect-camelization",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "cc-incorrect-camelization-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "cc-leading-underscore",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "cc-leading-underscore-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "cc-locale",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-node6-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-separator-empty",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "dc-empty-separator",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "dc-number-suffix",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "ms-months",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-binary-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-bits",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-fixedwidth",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-fixedwidth-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-nbsp",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-nbsp-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-rounding-boundary",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-signed",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-sub1-precision",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-sub1-precision-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "cc-incorrect-camelization",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-incorrect-camelization-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-leading-underscore",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "cc-leading-underscore-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "cc-locale",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-node6-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-separator-empty",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "dc-empty-separator",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "dc-number-suffix",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "ms-months",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-binary-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "pb-bits",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "pb-fixedwidth",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-fixedwidth-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-nbsp",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-nbsp-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-rounding-boundary",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-signed",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "pb-space-option-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-sub1-precision",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-sub1-precision-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      }
+    ]
+  ]
+}
