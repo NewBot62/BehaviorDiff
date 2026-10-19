@@ -1,13 +1,13 @@
-models: ["xingchen-agi/xing4.0-29b-a4b:free","liquid/lfm-2.5-2.6b:free","nvidia/nemotron-3.5-lightning:free","poolside/laguna-s-2.1:free"]
-=== xingchen-agi/xing4.0-29b-a4b:free
-PREFLIGHT FAILED for xingchen-agi/xing4.0-29b-a4b:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
-FAILED: xingchen-agi/xing4.0-29b-a4b:free
-=== liquid/lfm-2.5-2.6b:free
-PREFLIGHT FAILED for liquid/lfm-2.5-2.6b:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
-FAILED: liquid/lfm-2.5-2.6b:free
-=== nvidia/nemotron-3.5-lightning:free
-PREFLIGHT FAILED for nvidia/nemotron-3.5-lightning:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
-FAILED: nvidia/nemotron-3.5-lightning:free
-=== poolside/laguna-s-2.1:free
-PREFLIGHT FAILED for poolside/laguna-s-2.1:free: LLM request failed after retries (HTTP 429: Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day)
-FAILED: poolside/laguna-s-2.1:free
+models: ["01-ai/yi-large","ai21labs/jamba-1.5-large-instruct","aisingapore/sea-lion-7b-instruct","databricks/dbrx-instruct"]
+=== 01-ai/yi-large
+PREFLIGHT FAILED for 01-ai/yi-large: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '23bd454d-b225-49a3-8118-582a62fc51b8': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
+FAILED: 01-ai/yi-large
+=== ai21labs/jamba-1.5-large-instruct
+PREFLIGHT FAILED for ai21labs/jamba-1.5-large-instruct: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '6497fc2b-7ff8-4019-8946-123dccbfc863': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
+FAILED: ai21labs/jamba-1.5-large-instruct
+=== aisingapore/sea-lion-7b-instruct
+PREFLIGHT FAILED for aisingapore/sea-lion-7b-instruct: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '02f84bf4-c1a1-489b-a9de-ac3e8dcdec14': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
+FAILED: aisingapore/sea-lion-7b-instruct
+=== databricks/dbrx-instruct
+PREFLIGHT FAILED for databricks/dbrx-instruct: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '3d6c2ff8-8bfc-4d10-8fd0-b7337288e869': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
+FAILED: databricks/dbrx-instruct
