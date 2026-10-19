@@ -3,14 +3,14 @@
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
   "suite": "real",
-  "date": "2026-10-19T14:33:36.865Z",
+  "date": "2026-10-19T17:16:38.085Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 90.47619047619048,
-    "precision": 60.77485380116959,
-    "f1": 72.53963786471526,
-    "intendedFlagged": 8.333333333333334,
+    "recall": 85.71428571428571,
+    "precision": 68.31785345717235,
+    "f1": 75.98566308243727,
+    "intendedFlagged": 5.666666666666667,
     "intendedTotal": 19,
     "refactorsFlagged": 0,
     "refactorsTotal": 0,
@@ -19,45 +19,25 @@
   "usage": {
     "errorSamples": [],
     "calls": 119,
-    "promptTokens": 149411,
-    "completionTokens": 73391,
+    "promptTokens": 158550,
+    "completionTokens": 72916,
     "costUsd": 0,
     "errors": 0,
-    "unclear": 12,
+    "unclear": 9,
     "unclassified": 0,
-    "wallMs": 2331814
+    "wallMs": 1974129
   },
   "perRun": [
     {
       "functions": 33,
       "regressions": 14,
-      "caught": 13,
-      "recall": 92.85714285714286,
-      "precision": 65,
-      "f1": 76.47058823529412,
-      "flagged": 20,
-      "falseAlarmsOnIntended": {
-        "flagged": 7,
-        "of": 19
-      },
-      "falseAlarmsOnRefactors": {
-        "flagged": 0,
-        "of": 0
-      },
-      "missed": [
-        "ms-week-MUT:ms"
-      ]
-    },
-    {
-      "functions": 33,
-      "regressions": 14,
       "caught": 12,
       "recall": 85.71428571428571,
-      "precision": 63.1578947368421,
-      "f1": 72.72727272727273,
-      "flagged": 19,
+      "precision": 70.58823529411765,
+      "f1": 77.41935483870968,
+      "flagged": 17,
       "falseAlarmsOnIntended": {
-        "flagged": 7,
+        "flagged": 5,
         "of": 19
       },
       "falseAlarmsOnRefactors": {
@@ -65,8 +45,30 @@
         "of": 0
       },
       "missed": [
-        "cc-incorrect-camelization-MUT:default",
+        "ms-months-MUT:ms",
         "ms-week-MUT:ms"
+      ]
+    },
+    {
+      "functions": 33,
+      "regressions": 14,
+      "caught": 11,
+      "recall": 78.57142857142857,
+      "precision": 57.89473684210526,
+      "f1": 66.66666666666667,
+      "flagged": 19,
+      "falseAlarmsOnIntended": {
+        "flagged": 8,
+        "of": 19
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 0
+      },
+      "missed": [
+        "ms-week-MUT:ms",
+        "pb-binary-REAL:default",
+        "pb-space-option-MUT:default"
       ]
     },
     {
@@ -74,11 +76,11 @@
       "regressions": 14,
       "caught": 13,
       "recall": 92.85714285714286,
-      "precision": 54.166666666666664,
-      "f1": 68.42105263157895,
-      "flagged": 24,
+      "precision": 76.47058823529412,
+      "f1": 83.87096774193547,
+      "flagged": 17,
       "falseAlarmsOnIntended": {
-        "flagged": 11,
+        "flagged": 4,
         "of": 19
       },
       "falseAlarmsOnRefactors": {
@@ -104,7 +106,7 @@
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "cc-leading-underscore",
@@ -118,14 +120,14 @@
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "cc-locale",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "cc-node6-REAL",
@@ -173,248 +175,15 @@
         "case": "ms-months-MUT",
         "fn": "format",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-months-MUT",
-        "fn": "ms",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-months-MUT",
-        "fn": "parse",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-months-MUT",
-        "fn": "parseStrict",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-week",
-        "fn": "format",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "ms-week",
-        "fn": "ms",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "ms-week-MUT",
-        "fn": "format",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "ms-week-MUT",
-        "fn": "ms",
-        "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "ms-week-MUT",
-        "fn": "parse",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-week-MUT",
-        "fn": "parseStrict",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "pb-binary-REAL",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unclear"
-      },
-      {
-        "case": "pb-bits",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "pb-fixedwidth",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "pb-fixedwidth-MUT",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "pb-nbsp",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "pb-nbsp-MUT",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "pb-rounding-boundary",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "pb-signed",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "pb-space-option",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "pb-space-option-MUT",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "pb-sub1-precision",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "pb-sub1-precision-MUT",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      }
-    ],
-    [
-      {
-        "case": "cc-incorrect-camelization",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "cc-incorrect-camelization-MUT",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "cc-leading-underscore",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
-      },
-      {
-        "case": "cc-leading-underscore-MUT",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unclear"
-      },
-      {
-        "case": "cc-locale",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "cc-node6-REAL",
-        "fn": "default",
-        "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "cc-separator-empty",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
-      },
-      {
-        "case": "dc-empty-separator",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "dc-number-suffix",
-        "fn": "default",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
-      },
-      {
-        "case": "ms-months",
-        "fn": "format",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-months",
-        "fn": "ms",
-        "truth": "intended",
         "flagged": false,
         "verdict": "intended"
       },
       {
         "case": "ms-months-MUT",
-        "fn": "format",
-        "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
-      },
-      {
-        "case": "ms-months-MUT",
         "fn": "ms",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months-MUT",
@@ -562,8 +331,8 @@
         "case": "cc-incorrect-camelization",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "cc-incorrect-camelization-MUT",
@@ -576,8 +345,8 @@
         "case": "cc-leading-underscore",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "cc-leading-underscore-MUT",
@@ -590,8 +359,8 @@
         "case": "cc-locale",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "cc-node6-REAL",
@@ -709,15 +478,15 @@
         "case": "pb-binary-REAL",
         "fn": "default",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-bits",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-fixedwidth",
@@ -725,6 +494,239 @@
         "truth": "intended",
         "flagged": true,
         "verdict": "unintended"
+      },
+      {
+        "case": "pb-fixedwidth-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-nbsp",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "pb-nbsp-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-rounding-boundary",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "pb-signed",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-space-option-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-sub1-precision",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-sub1-precision-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "cc-incorrect-camelization",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-incorrect-camelization-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-leading-underscore",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "cc-leading-underscore-MUT",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "cc-locale",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "cc-node6-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "cc-separator-empty",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "dc-empty-separator",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "dc-number-suffix",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "ms-months",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-months",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-months-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week",
+        "fn": "ms",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "format",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "ms",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parse",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "ms-week-MUT",
+        "fn": "parseStrict",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-binary-REAL",
+        "fn": "default",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "pb-bits",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "pb-fixedwidth",
+        "fn": "default",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-fixedwidth-MUT",
@@ -765,8 +767,8 @@
         "case": "pb-space-option",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-space-option-MUT",
@@ -787,7 +789,7 @@
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unclear"
+        "verdict": "unintended"
       }
     ]
   ]

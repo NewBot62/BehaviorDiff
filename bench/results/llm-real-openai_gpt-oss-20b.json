@@ -3,14 +3,14 @@
   "provider": "nvidia",
   "label": "openai/gpt-oss-20b",
   "suite": "real",
-  "date": "2026-10-19T13:54:40.523Z",
+  "date": "2026-10-19T16:43:33.191Z",
   "runs": 3,
   "incomplete": false,
   "summary": {
     "recall": 90.47619047619048,
-    "precision": 58.69047619047618,
-    "f1": 71.09833407047029,
-    "intendedFlagged": 9,
+    "precision": 63.35421888053467,
+    "f1": 74.49452508276038,
+    "intendedFlagged": 7.333333333333333,
     "intendedTotal": 19,
     "refactorsFlagged": 0,
     "refactorsTotal": 0,
@@ -18,37 +18,16 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 106,
-    "promptTokens": 129444,
-    "completionTokens": 49053,
+    "calls": 109,
+    "promptTokens": 143233,
+    "completionTokens": 51595,
     "costUsd": 0,
     "errors": 0,
     "unclear": 9,
     "unclassified": 0,
-    "wallMs": 1166418
+    "wallMs": 1099903
   },
   "perRun": [
-    {
-      "functions": 33,
-      "regressions": 14,
-      "caught": 12,
-      "recall": 85.71428571428571,
-      "precision": 60,
-      "f1": 70.58823529411764,
-      "flagged": 20,
-      "falseAlarmsOnIntended": {
-        "flagged": 8,
-        "of": 19
-      },
-      "falseAlarmsOnRefactors": {
-        "flagged": 0,
-        "of": 0
-      },
-      "missed": [
-        "cc-incorrect-camelization-MUT:default",
-        "ms-week-MUT:ms"
-      ]
-    },
     {
       "functions": 33,
       "regressions": 14,
@@ -72,13 +51,34 @@
     {
       "functions": 33,
       "regressions": 14,
+      "caught": 12,
+      "recall": 85.71428571428571,
+      "precision": 63.1578947368421,
+      "f1": 72.72727272727273,
+      "flagged": 19,
+      "falseAlarmsOnIntended": {
+        "flagged": 7,
+        "of": 19
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 0
+      },
+      "missed": [
+        "ms-week-MUT:ms",
+        "pb-binary-REAL:default"
+      ]
+    },
+    {
+      "functions": 33,
+      "regressions": 14,
       "caught": 13,
       "recall": 92.85714285714286,
-      "precision": 54.166666666666664,
-      "f1": 68.42105263157895,
-      "flagged": 24,
+      "precision": 65,
+      "f1": 76.47058823529412,
+      "flagged": 20,
       "falseAlarmsOnIntended": {
-        "flagged": 11,
+        "flagged": 7,
         "of": 19
       },
       "falseAlarmsOnRefactors": {
@@ -96,15 +96,15 @@
         "case": "cc-incorrect-camelization",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "cc-incorrect-camelization-MUT",
         "fn": "default",
         "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "cc-leading-underscore",
@@ -152,8 +152,8 @@
         "case": "dc-number-suffix",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "ms-months",
@@ -173,8 +173,8 @@
         "case": "ms-months-MUT",
         "fn": "format",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months-MUT",
@@ -250,8 +250,8 @@
         "case": "pb-bits",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-fixedwidth",
@@ -293,7 +293,7 @@
         "fn": "default",
         "truth": "intended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "pb-space-option",
@@ -337,7 +337,7 @@
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "cc-leading-underscore",
@@ -385,8 +385,8 @@
         "case": "dc-number-suffix",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months",
@@ -476,15 +476,15 @@
         "case": "pb-binary-REAL",
         "fn": "default",
         "truth": "unintended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-bits",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-fixedwidth",
@@ -505,7 +505,7 @@
         "fn": "default",
         "truth": "intended",
         "flagged": true,
-        "verdict": "unclear"
+        "verdict": "unintended"
       },
       {
         "case": "pb-nbsp-MUT",
@@ -525,8 +525,8 @@
         "case": "pb-signed",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "pb-space-option",
@@ -570,14 +570,14 @@
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "cc-leading-underscore",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "cc-leading-underscore-MUT",
@@ -618,8 +618,8 @@
         "case": "dc-number-suffix",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months",
@@ -633,14 +633,14 @@
         "fn": "ms",
         "truth": "intended",
         "flagged": true,
-        "verdict": "unclear"
+        "verdict": "unintended"
       },
       {
         "case": "ms-months-MUT",
         "fn": "format",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "ms-months-MUT",
@@ -710,14 +710,14 @@
         "fn": "default",
         "truth": "unintended",
         "flagged": true,
-        "verdict": "unintended"
+        "verdict": "unclear"
       },
       {
         "case": "pb-bits",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unclear"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-fixedwidth",
@@ -758,15 +758,15 @@
         "case": "pb-signed",
         "fn": "default",
         "truth": "intended",
-        "flagged": true,
-        "verdict": "unintended"
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "pb-space-option",
         "fn": "default",
         "truth": "intended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unclear"
       },
       {
         "case": "pb-space-option-MUT",

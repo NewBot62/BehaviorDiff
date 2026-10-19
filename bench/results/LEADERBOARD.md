@@ -31,7 +31,7 @@ Untyped JavaScript from pretty-bytes, camelcase, ms and decamelize: real commits
 | Model | Recall | Precision | Intended flagged | Refactors flagged | Runs | Cost (USD) | Wall time (s) | Notes |
 |---|---|---|---|---|---|---|---|---|
 | *baseline (no LLM)* | 100% | 42% | 19/19 | 0/0 | - | 0 | - | flags every difference |
-| `nvidia/nemotron-3-super-120b-a12b` | 90% | 61% | 8.3/19 | 0.0/0 | 3 | 0.0000 | 2332 | 12 unclear |
-| `openai/gpt-oss-20b` | 90% | 59% | 9.0/19 | 0.0/0 | 3 | 0.0000 | 1166 | 9 unclear |
+| `nvidia/nemotron-3-super-120b-a12b` | 86% | 68% | 5.7/19 | 0.0/0 | 3 | 0.0000 | 1974 | 9 unclear |
+| `openai/gpt-oss-20b` | 90% | 63% | 7.3/19 | 0.0/0 | 3 | 0.0000 | 1100 | 9 unclear |
 
 Caveats: small hand-written suites (12 and 8-12 cases per class), so one case moves a metric by roughly 8 points and differences of a few points between models are noise. See README for limits.
