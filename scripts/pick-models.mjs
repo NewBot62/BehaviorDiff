@@ -20,14 +20,42 @@ if (provider === "nvidia") {
   const used = new Set(picked.map((id) => id.split("/")[0]));
   const bad = /embed|rerank|guard|safety|reward|-vl\b|vl-|vision|video|audio|speech|tts|asr|parse|clip|retriev|ocr|detect|topic-control|cosmos|sdxl|stable|flux|image|molecul|fold|riva|canary|parakeet|translate|nemoguard|arctic-embed|bge|e5-|nvclip|paligemma|neva|kosmos|fuyu|deplot|llava/i;
   const good = /instruct|chat|-it\b|nemotron|llama|qwen|mistral|deepseek|gemma|phi|glm|kimi|gpt-oss|minimax|granite|yi-/i;
-  const rest = list.filter((m) => good.test(m.id) && !bad.test(m.id)).sort((a, b) => (b.created ?? 0) - (a.created ?? 0));
+  // Rank well-known, actively served families first; the catalog also lists retired models
+  // that answer 404 "Function ... Not found for account", so every candidate is probed.
+  const fam = /llama-(3\.[123]|4)|qwen3|qwen2\.5|mistral-(small|nemo|large|medium)|deepseek-(v|r1)|gemma-(2|3)|nemotron|gpt-oss|phi-(3|4)|kimi|glm|minimax/i;
+  const rank = (id) => (fam.test(id) ? 0 : 1);
+  const rest = list
+    .filter((m) => good.test(m.id) && !bad.test(m.id) && !picked.includes(m.id))
+    .sort((a, b) => rank(a.id) - rank(b.id) || (b.created ?? 0) - (a.created ?? 0) || a.id.localeCompare(b.id));
+  const probe = async (id) => {
+    try {
+      const pr = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: id, messages: [{ role: "user", content: "Say OK" }], max_tokens: 4 }),
+        signal: AbortSignal.timeout(30000),
+      });
+      return pr.status === 200 || pr.status === 429; // 429 = exists but rate-limited
+    } catch {
+      return false;
+    }
+  };
+  const verified = [];
+  for (const id of picked) if (verified.length < max && (await probe(id))) verified.push(id);
+  const vendors = new Set(verified.map((id) => id.split("/")[0]));
+  let tried = 0;
   for (const m of rest) {
-    if (picked.length >= max) break;
+    if (verified.length >= max || tried >= 40) break;
     const v = m.id.split("/")[0];
-    if (used.has(v)) continue;
-    used.add(v);
-    picked.push(m.id);
+    if (vendors.has(v)) continue;
+    tried++;
+    if (await probe(m.id)) {
+      verified.push(m.id);
+      vendors.add(v);
+    } else console.error(`skipped (not served for this account): ${m.id}`);
   }
+  picked.length = 0;
+  picked.push(...verified);
   if (!picked.length) throw new Error("no usable NVIDIA text models found");
   console.log(JSON.stringify(picked.slice(0, max)));
   process.exit(0);
