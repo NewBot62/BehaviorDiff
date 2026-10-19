@@ -1,13 +1,17 @@
-models: ["01-ai/yi-large","ai21labs/jamba-1.5-large-instruct","aisingapore/sea-lion-7b-instruct","databricks/dbrx-instruct"]
-=== 01-ai/yi-large
-PREFLIGHT FAILED for 01-ai/yi-large: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '23bd454d-b225-49a3-8118-582a62fc51b8': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
-FAILED: 01-ai/yi-large
-=== ai21labs/jamba-1.5-large-instruct
-PREFLIGHT FAILED for ai21labs/jamba-1.5-large-instruct: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '6497fc2b-7ff8-4019-8946-123dccbfc863': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
-FAILED: ai21labs/jamba-1.5-large-instruct
-=== aisingapore/sea-lion-7b-instruct
-PREFLIGHT FAILED for aisingapore/sea-lion-7b-instruct: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '02f84bf4-c1a1-489b-a9de-ac3e8dcdec14': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
-FAILED: aisingapore/sea-lion-7b-instruct
-=== databricks/dbrx-instruct
-PREFLIGHT FAILED for databricks/dbrx-instruct: LLM HTTP 404: {"status":404,"title":"Not Found","detail":"Function '3d6c2ff8-8bfc-4d10-8fd0-b7337288e869': Not found for account 'SBl5Tipd1UJmPUsV8K-gH-jFIKVub7Q8-u_neOcS0bA'"}
-FAILED: databricks/dbrx-instruct
+models: ["google/diffusiongemma-26b-a4b-it","nvidia/nemotron-3-super-120b-a12b","openai/gpt-oss-20b","z-ai/glm-5.3"]
+=== google/diffusiongemma-26b-a4b-it
+run 1/1: recall 83%  precision 91%  spent $0.0000
+
+google/diffusiongemma-26b-a4b-it: recall 83%  precision 91%  cost $0.0000  calls 21  errors 0
+=== nvidia/nemotron-3-super-120b-a12b
+run 1/1: recall 75%  precision 100%  spent $0.0000
+
+nvidia/nemotron-3-super-120b-a12b: recall 75%  precision 100%  cost $0.0000  calls 20  errors 0
+=== openai/gpt-oss-20b
+run 1/1: recall 83%  precision 100%  spent $0.0000
+
+openai/gpt-oss-20b: recall 83%  precision 100%  cost $0.0000  calls 19  errors 0
+=== z-ai/glm-5.3
+run 1/1: recall 83%  precision 100%  spent $0.0000
+
+z-ai/glm-5.3: recall 83%  precision 100%  cost $0.0000  calls 20  errors 0
