@@ -9,9 +9,9 @@ Explicit descriptions; the easier set.
 | Model | Recall | Precision | Intended flagged | Refactors flagged | Runs | Cost (USD) | Wall time (s) | Notes |
 |---|---|---|---|---|---|---|---|---|
 | *baseline (no LLM)* | 92% | 58% | 8/8 | 0/10 | - | 0 | - | flags every difference |
-| `openai/gpt-oss-20b` | 83% | 100% | 0.0/8 | 0.0/10 | 1 | 0.0000 | 91 |  |
+| `nvidia/nemotron-3-super-120b-a12b` | 83% | 100% | 0.0/8 | 0.0/10 | 3 | 0.0000 | 672 |  |
+| `openai/gpt-oss-20b` | 83% | 100% | 0.0/8 | 0.0/10 | 3 | 0.0000 | 435 |  |
 | `z-ai/glm-5.3` | 83% | 100% | 0.0/8 | 0.0/10 | 1 | 0.0000 | 590 |  |
-| `nvidia/nemotron-3-super-120b-a12b` | 75% | 100% | 0.0/8 | 0.0/10 | 1 | 0.0000 | 242 |  |
 | `google/diffusiongemma-26b-a4b-it` | 83% | 91% | 1.0/8 | 0.0/10 | 1 | 0.0000 | 106 | 2 unclear |
 
 ## Hard suite (12 cases)
@@ -21,7 +21,7 @@ Unrelated descriptions, prompt injection, source-only differences, removed expor
 | Model | Recall | Precision | Intended flagged | Refactors flagged | Runs | Cost (USD) | Wall time (s) | Notes |
 |---|---|---|---|---|---|---|---|---|
 | *baseline (no LLM)* | 100% | 58% | 5/5 | 0/2 | - | 0 | - | flags every difference |
-| `nvidia/nemotron-3-super-120b-a12b` | 86% | 100% | 0.0/5 | 0.0/2 | 1 | 0.0000 | 96 |  |
-| `openai/gpt-oss-20b` | 57% | 100% | 0.0/5 | 0.0/2 | 1 | 0.0000 | 158 |  |
+| `nvidia/nemotron-3-super-120b-a12b` | 90% | 100% | 0.0/5 | 0.0/2 | 3 | 0.0000 | 334 | 1 unclear |
+| `openai/gpt-oss-20b` | 90% | 100% | 0.0/5 | 0.0/2 | 3 | 0.0000 | 194 | 2 unclear |
 
 Caveats: small hand-written suites (12 and 8-12 cases per class), so one case moves a metric by roughly 8 points and differences of a few points between models are noise. See README for limits.

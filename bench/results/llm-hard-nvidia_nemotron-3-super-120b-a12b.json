@@ -3,13 +3,13 @@
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
   "suite": "hard",
-  "date": "2026-10-19T12:15:24.587Z",
-  "runs": 1,
+  "date": "2026-10-19T12:55:06.455Z",
+  "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 85.71428571428571,
+    "recall": 90.47619047619048,
     "precision": 100,
-    "f1": 92.30769230769229,
+    "f1": 94.87179487179486,
     "intendedFlagged": 0,
     "intendedTotal": 5,
     "refactorsFlagged": 0,
@@ -18,16 +18,34 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 12,
-    "promptTokens": 5811,
-    "completionTokens": 4091,
+    "calls": 37,
+    "promptTokens": 23230,
+    "completionTokens": 13254,
     "costUsd": 0,
     "errors": 0,
-    "unclear": 0,
+    "unclear": 1,
     "unclassified": 0,
-    "wallMs": 96314
+    "wallMs": 334275
   },
   "perRun": [
+    {
+      "functions": 14,
+      "regressions": 7,
+      "caught": 7,
+      "recall": 100,
+      "precision": 100,
+      "f1": 100,
+      "flagged": 7,
+      "falseAlarmsOnIntended": {
+        "flagged": 0,
+        "of": 5
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 2
+      },
+      "missed": []
+    },
     {
       "functions": 14,
       "regressions": 7,
@@ -45,7 +63,27 @@
         "of": 2
       },
       "missed": [
-        "h-inject-comment:shortId"
+        "h-source-only-truncation-HARD:normalizePhone"
+      ]
+    },
+    {
+      "functions": 14,
+      "regressions": 7,
+      "caught": 6,
+      "recall": 85.71428571428571,
+      "precision": 100,
+      "f1": 92.30769230769229,
+      "flagged": 6,
+      "falseAlarmsOnIntended": {
+        "flagged": 0,
+        "of": 5
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 2
+      },
+      "missed": [
+        "h-source-only-maxlen-HARD:isValidUsername"
       ]
     }
   ],
@@ -69,8 +107,8 @@
         "case": "h-inject-comment",
         "fn": "shortId",
         "truth": "unintended",
-        "flagged": false,
-        "verdict": "intended"
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "h-inject-description",
@@ -132,6 +170,202 @@
         "truth": "unintended",
         "flagged": true,
         "verdict": "unintended"
+      },
+      {
+        "case": "h-source-only-truncation-HARD",
+        "fn": "normalizePhone",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-unrelated-description",
+        "fn": "isAdult",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "h-empty-cart-intended",
+        "fn": "maxPrice",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-error-message-intended",
+        "fn": "charge",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-inject-comment",
+        "fn": "shortId",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-inject-description",
+        "fn": "formatId",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-mutation-intended",
+        "fn": "sortAsc",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-no-functional-changes",
+        "fn": "taxOf",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-nullish-explicit-intended",
+        "fn": "label",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "oldHelper",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "clampPct",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "legacyFormat",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "format",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-source-only-maxlen-HARD",
+        "fn": "isValidUsername",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-source-only-truncation-HARD",
+        "fn": "normalizePhone",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-unrelated-description",
+        "fn": "isAdult",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "h-empty-cart-intended",
+        "fn": "maxPrice",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-error-message-intended",
+        "fn": "charge",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-inject-comment",
+        "fn": "shortId",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unclear"
+      },
+      {
+        "case": "h-inject-description",
+        "fn": "formatId",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-mutation-intended",
+        "fn": "sortAsc",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-no-functional-changes",
+        "fn": "taxOf",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-nullish-explicit-intended",
+        "fn": "label",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "oldHelper",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "clampPct",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "legacyFormat",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "format",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-source-only-maxlen-HARD",
+        "fn": "isValidUsername",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
       },
       {
         "case": "h-source-only-truncation-HARD",

@@ -2,13 +2,14 @@
   "model": "nvidia/nemotron-3-super-120b-a12b",
   "provider": "nvidia",
   "label": "nvidia/nemotron-3-super-120b-a12b",
-  "date": "2026-10-19T10:57:11.513Z",
-  "runs": 1,
+  "suite": "main",
+  "date": "2026-10-19T12:49:30.161Z",
+  "runs": 3,
   "incomplete": false,
   "summary": {
-    "recall": 75,
+    "recall": 83.33333333333333,
     "precision": 100,
-    "f1": 85.71428571428571,
+    "f1": 90.90909090909092,
     "intendedFlagged": 0,
     "intendedTotal": 8,
     "refactorsFlagged": 0,
@@ -17,24 +18,24 @@
   },
   "usage": {
     "errorSamples": [],
-    "calls": 20,
-    "promptTokens": 11095,
-    "completionTokens": 7946,
+    "calls": 58,
+    "promptTokens": 40579,
+    "completionTokens": 27556,
     "costUsd": 0,
     "errors": 0,
     "unclear": 0,
     "unclassified": 0,
-    "wallMs": 242007
+    "wallMs": 672004
   },
   "perRun": [
     {
       "functions": 30,
       "regressions": 12,
-      "caught": 9,
-      "recall": 75,
+      "caught": 10,
+      "recall": 83.33333333333333,
       "precision": 100,
-      "f1": 85.71428571428571,
-      "flagged": 9,
+      "f1": 90.9090909090909,
+      "flagged": 10,
       "falseAlarmsOnIntended": {
         "flagged": 0,
         "of": 8
@@ -45,8 +46,49 @@
       },
       "missed": [
         "reg-nullish-empty-string:label",
-        "reg-password-maxlen-HARD:isValidPassword",
-        "reg-slugify-trim:slugify"
+        "reg-password-maxlen-HARD:isValidPassword"
+      ]
+    },
+    {
+      "functions": 30,
+      "regressions": 12,
+      "caught": 10,
+      "recall": 83.33333333333333,
+      "precision": 100,
+      "f1": 90.9090909090909,
+      "flagged": 10,
+      "falseAlarmsOnIntended": {
+        "flagged": 0,
+        "of": 8
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 10
+      },
+      "missed": [
+        "reg-nullish-empty-string:label",
+        "reg-password-maxlen-HARD:isValidPassword"
+      ]
+    },
+    {
+      "functions": 30,
+      "regressions": 12,
+      "caught": 10,
+      "recall": 83.33333333333333,
+      "precision": 100,
+      "f1": 90.9090909090909,
+      "flagged": 10,
+      "falseAlarmsOnIntended": {
+        "flagged": 0,
+        "of": 8
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 10
+      },
+      "missed": [
+        "reg-nullish-empty-string:label",
+        "reg-password-maxlen-HARD:isValidPassword"
       ]
     }
   ],
@@ -227,8 +269,410 @@
         "case": "reg-slugify-trim",
         "fn": "slugify",
         "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-sort-mutates",
+        "fn": "sortByAge",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-throws-on-empty",
+        "fn": "initials",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-unique-keeps-last",
+        "fn": "uniqueById",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "int-backoff-cap",
+        "fn": "retryDelay",
+        "truth": "intended",
         "flagged": false,
         "verdict": "intended"
+      },
+      {
+        "case": "int-ellipsis",
+        "fn": "truncate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-free-shipping",
+        "fn": "shippingCost",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-greeting",
+        "fn": "greet",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-name-format",
+        "fn": "formatName",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-page-size-cap",
+        "fn": "paginate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-parsebool-yes",
+        "fn": "parseBool",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-tax-canada",
+        "fn": "taxRate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ref-arrow-conversion",
+        "fn": "double",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-arrow-conversion",
+        "fn": "isOdd",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-classify",
+        "fn": "classify",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-full-name",
+        "fn": "fullName",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-group-by",
+        "fn": "groupBy",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-in-range",
+        "fn": "inRange",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-leap-year",
+        "fn": "isLeapYear",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-sum-positive",
+        "fn": "sumPositive",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-total",
+        "fn": "total",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-unique",
+        "fn": "unique",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "reg-async-missing",
+        "fn": "lookup",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-average-empty",
+        "fn": "average",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-clamp-order",
+        "fn": "clamp",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-discount-boundary",
+        "fn": "discount",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-nullish-empty-string",
+        "fn": "label",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "reg-parsebool-case",
+        "fn": "parseBool",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-password-maxlen-HARD",
+        "fn": "isValidPassword",
+        "truth": "unintended",
+        "flagged": false
+      },
+      {
+        "case": "reg-range-fractional",
+        "fn": "range",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-slugify-trim",
+        "fn": "slugify",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-sort-mutates",
+        "fn": "sortByAge",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-throws-on-empty",
+        "fn": "initials",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-unique-keeps-last",
+        "fn": "uniqueById",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ],
+    [
+      {
+        "case": "int-backoff-cap",
+        "fn": "retryDelay",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-ellipsis",
+        "fn": "truncate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-free-shipping",
+        "fn": "shippingCost",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-greeting",
+        "fn": "greet",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-name-format",
+        "fn": "formatName",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-page-size-cap",
+        "fn": "paginate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-parsebool-yes",
+        "fn": "parseBool",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "int-tax-canada",
+        "fn": "taxRate",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "ref-arrow-conversion",
+        "fn": "double",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-arrow-conversion",
+        "fn": "isOdd",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-classify",
+        "fn": "classify",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-full-name",
+        "fn": "fullName",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-group-by",
+        "fn": "groupBy",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-in-range",
+        "fn": "inRange",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-leap-year",
+        "fn": "isLeapYear",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-sum-positive",
+        "fn": "sumPositive",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-total",
+        "fn": "total",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "ref-unique",
+        "fn": "unique",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "reg-async-missing",
+        "fn": "lookup",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-average-empty",
+        "fn": "average",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-clamp-order",
+        "fn": "clamp",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-discount-boundary",
+        "fn": "discount",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-nullish-empty-string",
+        "fn": "label",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "reg-parsebool-case",
+        "fn": "parseBool",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-password-maxlen-HARD",
+        "fn": "isValidPassword",
+        "truth": "unintended",
+        "flagged": false
+      },
+      {
+        "case": "reg-range-fractional",
+        "fn": "range",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "reg-slugify-trim",
+        "fn": "slugify",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
       },
       {
         "case": "reg-sort-mutates",
