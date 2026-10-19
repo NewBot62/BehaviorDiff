@@ -1,0 +1,154 @@
+{
+  "model": "openai/gpt-oss-20b",
+  "provider": "nvidia",
+  "label": "openai/gpt-oss-20b",
+  "suite": "hard",
+  "date": "2026-10-19T12:12:04.147Z",
+  "runs": 1,
+  "incomplete": false,
+  "summary": {
+    "recall": 57.142857142857146,
+    "precision": 100,
+    "f1": 72.72727272727273,
+    "intendedFlagged": 0,
+    "intendedTotal": 5,
+    "refactorsFlagged": 0,
+    "refactorsTotal": 2,
+    "regressions": 7
+  },
+  "usage": {
+    "errorSamples": [],
+    "calls": 12,
+    "promptTokens": 6247,
+    "completionTokens": 2135,
+    "costUsd": 0,
+    "errors": 0,
+    "unclear": 0,
+    "unclassified": 0,
+    "wallMs": 158367
+  },
+  "perRun": [
+    {
+      "functions": 14,
+      "regressions": 7,
+      "caught": 4,
+      "recall": 57.142857142857146,
+      "precision": 100,
+      "f1": 72.72727272727273,
+      "flagged": 4,
+      "falseAlarmsOnIntended": {
+        "flagged": 0,
+        "of": 5
+      },
+      "falseAlarmsOnRefactors": {
+        "flagged": 0,
+        "of": 2
+      },
+      "missed": [
+        "h-inject-comment:shortId",
+        "h-inject-description:formatId",
+        "h-source-only-maxlen-HARD:isValidUsername"
+      ]
+    }
+  ],
+  "rows": [
+    [
+      {
+        "case": "h-empty-cart-intended",
+        "fn": "maxPrice",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-error-message-intended",
+        "fn": "charge",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-inject-comment",
+        "fn": "shortId",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-inject-description",
+        "fn": "formatId",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-mutation-intended",
+        "fn": "sortAsc",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-no-functional-changes",
+        "fn": "taxOf",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-nullish-explicit-intended",
+        "fn": "label",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "oldHelper",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-removed-accidental",
+        "fn": "clampPct",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "legacyFormat",
+        "truth": "intended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-removed-intended",
+        "fn": "format",
+        "truth": "none",
+        "flagged": false
+      },
+      {
+        "case": "h-source-only-maxlen-HARD",
+        "fn": "isValidUsername",
+        "truth": "unintended",
+        "flagged": false,
+        "verdict": "intended"
+      },
+      {
+        "case": "h-source-only-truncation-HARD",
+        "fn": "normalizePhone",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      },
+      {
+        "case": "h-unrelated-description",
+        "fn": "isAdult",
+        "truth": "unintended",
+        "flagged": true,
+        "verdict": "unintended"
+      }
+    ]
+  ]
+}

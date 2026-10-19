@@ -1,17 +1,8 @@
-models: ["google/diffusiongemma-26b-a4b-it","nvidia/nemotron-3-super-120b-a12b","openai/gpt-oss-20b","z-ai/glm-5.3"]
-=== google/diffusiongemma-26b-a4b-it
-run 1/1: recall 83%  precision 91%  spent $0.0000
-
-google/diffusiongemma-26b-a4b-it: recall 83%  precision 91%  cost $0.0000  calls 21  errors 0
-=== nvidia/nemotron-3-super-120b-a12b
-run 1/1: recall 75%  precision 100%  spent $0.0000
-
-nvidia/nemotron-3-super-120b-a12b: recall 75%  precision 100%  cost $0.0000  calls 20  errors 0
+models: [
+  "openai/gpt-oss-20b"
+]
 === openai/gpt-oss-20b
-run 1/1: recall 83%  precision 100%  spent $0.0000
+--- suite: hard
+run 1/1: recall 57%  precision 100%  spent $0.0000
 
-openai/gpt-oss-20b: recall 83%  precision 100%  cost $0.0000  calls 19  errors 0
-=== z-ai/glm-5.3
-run 1/1: recall 83%  precision 100%  spent $0.0000
-
-z-ai/glm-5.3: recall 83%  precision 100%  cost $0.0000  calls 20  errors 0
+openai/gpt-oss-20b: recall 57%  precision 100%  cost $0.0000  calls 12  errors 0
