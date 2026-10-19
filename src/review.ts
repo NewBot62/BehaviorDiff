@@ -15,6 +15,8 @@ export interface ReviewOptions extends CompareOptions {
   /** review at most this many changed functions (default 20) */
   maxFunctions?: number;
   concurrency?: number;
+  /** do not send function source to the model, only the observed differences (privacy) */
+  redactSource?: boolean;
 }
 
 function sourcesOf(file: string): Map<string, string> {
@@ -48,8 +50,8 @@ export async function classifyReport(report: Report, oldFile: string, newFile: s
         const input: Parameters<typeof classifyFunction>[1] = { intent: opts.intent, fn: f };
         const o = oldSrc.get(f.name);
         const nw = newSrc.get(f.name);
-        if (o) input.oldSource = o;
-        if (nw) input.newSource = nw;
+        if (o && !opts.redactSource) input.oldSource = o;
+        if (nw && !opts.redactSource) input.newSource = nw;
         const r = await classifyFunction(opts.llm, input);
         f.review = r.review;
         addUsage(usage, r.usage);

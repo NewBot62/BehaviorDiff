@@ -202,13 +202,50 @@ export function analyze(source: string, fileName: string, lim: { maxStrings?: nu
   const isDefault = (s: ts.Node) =>
     ts.canHaveModifiers(s) && !!ts.getModifiers(s)?.some((m) => m.kind === ts.SyntaxKind.DefaultKeyword);
 
+  const isPrivate = (m: ts.ClassElement) =>
+    ts.canHaveModifiers(m) && !!ts.getModifiers(m)?.some((x) => x.kind === ts.SyntaxKind.PrivateKeyword || x.kind === ts.SyntaxKind.ProtectedKeyword || x.kind === ts.SyntaxKind.AbstractKeyword);
+  const isStatic = (m: ts.ClassElement) => ts.canHaveModifiers(m) && !!ts.getModifiers(m)?.some((x) => x.kind === ts.SyntaxKind.StaticKeyword);
+  /** Constructor, instance methods (`C#m`) and static methods (`C.m`) of a class. */
+  function addClass(name: string, c: ts.ClassDeclaration | ts.ClassExpression) {
+    let ctor: ts.ConstructorDeclaration | undefined;
+    for (const m of c.members) {
+      if (ts.isConstructorDeclaration(m)) ctor = m;
+      else if (ts.isMethodDeclaration(m) && !isPrivate(m) && (ts.isIdentifier(m.name) || ts.isStringLiteralLike(m.name)) && m.body) {
+        const key = `${name}${isStatic(m) ? "." : "#"}${m.name.text}`;
+        sigs.set(key, sigOf(key, m));
+        sources.set(key, clip(m.getText()));
+      }
+    }
+    sigs.set(name, ctor ? sigOf(name, ctor) : { name, params: [] });
+    sources.set(name, clip(c.getText()));
+  }
+  const aliasClass = (local: string, alias: string) => {
+    for (const [k, v] of [...sigs]) if (k.startsWith(`${local}#`) || k.startsWith(`${local}.`)) sigs.set(alias + k.slice(local.length), { ...v, name: alias + k.slice(local.length) });
+    for (const [k, v] of [...sources]) if (k.startsWith(`${local}#`) || k.startsWith(`${local}.`)) sources.set(alias + k.slice(local.length), v);
+  };
+
   for (const s of sf.statements) {
-    if (ts.isFunctionDeclaration(s)) {
+    if (ts.isClassDeclaration(s)) {
+      if (s.name) addClass(s.name.text, s);
+      if (isDefault(s)) {
+        addClass("default", s);
+        if (s.name) aliasClass(s.name.text, "default");
+      }
+    } else if (ts.isFunctionDeclaration(s)) {
       if (s.name) (sigs.set(s.name.text, sigOf(s.name.text, s)), sources.set(s.name.text, clip(s.getText())));
       if (isDefault(s)) (sigs.set("default", sigOf("default", s)), sources.set("default", clip(s.getText())));
     } else if (ts.isVariableStatement(s)) {
       for (const d of s.declarationList.declarations) {
-        if (ts.isIdentifier(d.name) && d.initializer && (ts.isArrowFunction(d.initializer) || ts.isFunctionExpression(d.initializer))) {
+        if (ts.isIdentifier(d.name) && d.initializer && ts.isObjectLiteralExpression(d.initializer)) {
+          for (const prop of d.initializer.properties) {
+            const pn = prop.name && (ts.isIdentifier(prop.name) || ts.isStringLiteralLike(prop.name)) ? prop.name.text : undefined;
+            if (!pn) continue;
+            const key = `${d.name.text}.${pn}`;
+            if (ts.isMethodDeclaration(prop)) (sigs.set(key, sigOf(key, prop)), sources.set(key, clip(prop.getText())));
+            else if (ts.isPropertyAssignment(prop) && (ts.isArrowFunction(prop.initializer) || ts.isFunctionExpression(prop.initializer))) (sigs.set(key, sigOf(key, prop.initializer)), sources.set(key, clip(prop.getText())));
+          }
+        } else if (ts.isIdentifier(d.name) && d.initializer && ts.isClassExpression(d.initializer)) addClass(d.name.text, d.initializer);
+        else if (ts.isIdentifier(d.name) && d.initializer && (ts.isArrowFunction(d.initializer) || ts.isFunctionExpression(d.initializer))) {
           sigs.set(d.name.text, sigOf(d.name.text, d.initializer));
           sources.set(d.name.text, clip(s.getText()));
         }
@@ -235,7 +272,7 @@ export function analyze(source: string, fileName: string, lim: { maxStrings?: nu
     if (ts.isExportDeclaration(s) && !s.moduleSpecifier && s.exportClause && ts.isNamedExports(s.exportClause)) {
       for (const el of s.exportClause.elements) {
         const local = (el.propertyName ?? el.name).text;
-        if (sigs.has(local)) (sigs.set(el.name.text, { ...sigs.get(local)!, name: el.name.text }), sources.set(el.name.text, sources.get(local) ?? ""));
+        if (sigs.has(local)) (sigs.set(el.name.text, { ...sigs.get(local)!, name: el.name.text }), sources.set(el.name.text, sources.get(local) ?? ""), el.name.text !== local && aliasClass(local, el.name.text));
       }
     }
   }

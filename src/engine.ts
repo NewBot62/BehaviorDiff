@@ -14,8 +14,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const RUNNER = existsSync(join(here, "runner.js")) ? join(here, "runner.js") : join(here, "..", "dist", "src", "runner.js");
 
 type CallResult =
-  | { ok: true; value: unknown; after: unknown; logs: unknown }
-  | { ok: false; err: { name: string; message: string }; after: unknown; logs: unknown }
+  | { ok: true; value: unknown; after: unknown; logs: unknown; state?: unknown; second?: unknown }
+  | { ok: false; err: { name: string; message: string }; after: unknown; logs: unknown; state?: unknown }
   | { timeout: true }
   | { crash: string }
   | { skipped: true };
@@ -124,11 +124,13 @@ function diffKind(a: CallResult, b: CallResult): DiffKind | null {
   if (a.ok !== b.ok) return "threw-vs-returned";
   if (a.ok && b.ok) {
     if (canonical(a.value) !== canonical(b.value)) return "return-value";
+    if (canonical(a.second) !== canonical(b.second)) return "return-value";
   } else if (!a.ok && !b.ok) {
     if (a.err.name !== b.err.name) return "error-type";
     if (a.err.message !== b.err.message) return "error-message";
   }
   if (canonical(a.after) !== canonical(b.after)) return "input-mutation";
+  if (canonical(a.state) !== canonical(b.state)) return "state-change";
   if (canonical(a.logs) !== canonical(b.logs)) return "logs";
   return null;
 }
@@ -138,13 +140,15 @@ function show(v: unknown): string {
   return s.length > 160 ? s.slice(0, 157) + "..." : s;
 }
 
-function describe(r: CallResult, kind: DiffKind): string {
+function describe(r: CallResult, kind: DiffKind, other?: CallResult): string {
   if ("timeout" in r) return "<timeout>";
   if ("crash" in r) return `<crash: ${r.crash}>`;
   if ("skipped" in r) return "<skipped>";
   if (!r.ok) return `throws ${r.err.name}: ${r.err.message}`;
   if (kind === "input-mutation") return `args after call: ${show(decode(r.after))}`;
   if (kind === "logs") return `logs: ${show(r.logs)}`;
+  if (kind === "state-change") return `object state after call: ${show(decode(r.state))}`;
+  if (kind === "return-value" && other && "ok" in other && other.ok && canonical(r.value) === canonical(other.value) && r.second !== undefined) return `${show(decode(r.value))}, and on a second call on the same object: ${show(decode(r.second))}`;
   return show(decode(r.value));
 }
 
@@ -217,6 +221,7 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
 
     const names = [...new Set([...oldEx.map((e) => e.name), ...newEx.map((e) => e.name)])]
       .filter((n) => !opts.functions || opts.functions.includes(n))
+      .filter((n) => !opts.ignore?.includes(n))
       .sort();
 
     const reports = await mapLimit(names, 3, async (name): Promise<FunctionReport> => {
@@ -225,8 +230,20 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
       const empty = { tested: 0, differing: 0, kinds: {}, examples: [] };
       if (!o) return { name, status: "added", ...empty };
       if (!n) return { name, status: "removed", ...empty, note: "export removed" };
-      if (o.isClass || n.isClass) return { name, status: "skipped", ...empty, note: "classes are not supported yet" };
-      const inputs = buildInputs(newA.sigs.get(name), oldA.sigs.get(name), n.arity, o.arity, ctx, maxInputs, name);
+      const hashAt = name.indexOf("#");
+      let generated: unknown[][];
+      if (hashAt > 0) {
+        // instance method: every call is [constructor args, method args] on a fresh instance
+        const cls = name.slice(0, hashAt);
+        const co = oldEx.find((e) => e.name === cls), cn = newEx.find((e) => e.name === cls);
+        const ctors = buildInputs(newA.sigs.get(cls), oldA.sigs.get(cls), cn?.arity ?? 0, co?.arity ?? 0, ctx, 8, `${cls}:ctor`);
+        const margs = buildInputs(newA.sigs.get(name), oldA.sigs.get(name), n.arity, o.arity, ctx, maxInputs, name);
+        generated = margs.map((m, k) => [ctors[k % Math.max(ctors.length, 1)] ?? [], m]);
+      } else {
+        generated = buildInputs(newA.sigs.get(name), oldA.sigs.get(name), n.arity, o.arity, ctx, maxInputs, name);
+      }
+      const mine = opts.customInputs?.[name] ?? [];
+      const inputs = mine.length ? [...mine, ...generated] : generated;
       const inputsFile = join(tmp, `in-${name.replace(/\W/g, "_")}.json`);
       writeFileSync(inputsFile, JSON.stringify(inputs.map((a) => encode(a))));
       const [ro, rn] = await Promise.all([
@@ -249,8 +266,13 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
         const k = diffKind(a, b);
         if (!k) continue;
         kinds[k] = (kinds[k] ?? 0) + 1;
-        const call = `${name}(${(inputs[i] as unknown[]).map(show).join(", ")})`;
-        diffs.push({ kind: k, call, old: describe(a, k), new: describe(b, k), sz: call.length });
+        const inp = inputs[i] as unknown[];
+        const call = hashAt > 0
+          ? `new ${name.slice(0, hashAt)}(${(inp[0] as unknown[]).map(show).join(", ")}).${name.slice(hashAt + 1)}(${(inp[1] as unknown[]).map(show).join(", ")})`
+          : n.isClass
+            ? `new ${name}(${inp.map(show).join(", ")})`
+            : `${name}(${inp.map(show).join(", ")})`;
+        diffs.push({ kind: k, call, old: describe(a, k, b), new: describe(b, k, a), sz: call.length });
       }
       diffs.sort((x, y) => x.sz - y.sz);
       const examples: Difference[] = [];
@@ -260,7 +282,7 @@ export async function compareFiles(oldFile: string, newFile: string, opts: Compa
       const notes: string[] = [];
       if (o.arity !== n.arity) notes.push(`arity changed ${o.arity} -> ${n.arity}`);
       if (tested >= 10 && oldErrors / tested >= 0.9) notes.push("low coverage: nearly all generated inputs made the function throw");
-      else if (tested >= 10 && distinct.size <= 1) notes.push("low coverage: every input produced the same outcome");
+      else if (tested >= 10 && distinct.size <= 1 && diffs.length === 0) notes.push("low coverage: every input produced the same outcome");
       const rep: FunctionReport = {
         name,
         status: diffs.length ? "changed" : "unchanged",

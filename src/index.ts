@@ -5,3 +5,6 @@ export { resolveConfig, chat, PROVIDERS, type LlmConfig, type ConfigInput } from
 export { buildMessages, parseReview, classifyFunction, SYSTEM_PROMPT } from "./classify.js";
 export { formatText, formatMarkdown } from "./report.js";
 export type { Report, FunctionReport, Difference, DiffKind, CompareOptions, Review, Verdict, LlmSummary } from "./types.js";
+export { reviewChanged, changedFiles, defaultBase, commitMessages, formatProjectText, type ProjectOptions, type ProjectReport } from "./project.js";
+export { seedsFor } from "./seeds.js";
+export { comparePackages, parseSpec, entryOf, type PkgOptions } from "./pkg.js";

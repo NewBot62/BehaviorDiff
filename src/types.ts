@@ -1,4 +1,5 @@
 export type DiffKind =
+  | "state-change"
   | "return-value"
   | "threw-vs-returned"
   | "error-type"
@@ -77,4 +78,8 @@ export interface CompareOptions {
   functions?: string[];
   /** examples kept per function (default 5) */
   maxExamples?: number;
+  /** your own argument lists per exported function, tried in addition to generated ones (JSON values) */
+  customInputs?: Record<string, unknown[][]>;
+  /** exported functions to skip (non-deterministic, slow, or not interesting) */
+  ignore?: string[];
 }

@@ -8,7 +8,8 @@
     "node": ">=22"
   },
   "bin": {
-    "behaviordiff": "dist/src/cli.js"
+    "behaviordiff": "dist/src/cli.js",
+    "behaviordiff-mcp": "dist/src/mcp.js"
   },
   "main": "dist/src/index.js",
   "files": [

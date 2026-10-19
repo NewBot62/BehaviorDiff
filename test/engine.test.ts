@@ -181,3 +181,43 @@ describe("untyped JavaScript", () => {
     rmSync(d, { recursive: true });
   });
 });
+
+describe("classes", () => {
+  const OLD = `export class Cart {
+  items: string[] = [];
+  constructor(public currency: string = "EUR") {}
+  add(name: string): number { this.items.push(name); return this.items.length; }
+  total(discount?: number): number { const s = this.items.length * 10; return discount ? s - discount : s; }
+  static make(): Cart { return new Cart("USD"); }
+}`;
+  it("compares instance methods (including accumulated state) and static methods", async () => {
+    const NEW = OLD.replace("this.items.push(name)", "this.items.unshift(name)").replace("s - discount", "Math.max(0, s - discount)").replace('new Cart("USD")', 'new Cart("GBP")');
+    const { d, o, n } = pair(OLD, NEW);
+    const r = await compareFiles(o, n);
+    expect(get(r, "Cart#add").status).toBe("changed"); // order of items differs after two calls
+    expect(get(r, "Cart#add").kinds["state-change"]).toBeGreaterThan(0);
+    expect(get(r, "Cart#total").status).toBe("changed");
+    expect(get(r, "Cart.make").status).toBe("changed");
+    expect(get(r, "Cart#total").examples[0]!.call).toMatch(/^new Cart\(.*\)\.total\(/);
+    rmSync(d, { recursive: true });
+  });
+  it("reports no difference for an equivalent refactor of a class", async () => {
+    const { d, o, n } = pair(OLD, OLD.replace("this.items.length * 10", "10 * this.items.length"));
+    const r = await compareFiles(o, n);
+    expect(r.behaviorChanged).toBe(false);
+    rmSync(d, { recursive: true });
+  });
+});
+
+describe("exported objects of functions", () => {
+  it("compares utils.fn members", async () => {
+    const { d, o, n } = pair(
+      "export const utils = { double(x: number): number { return x * 2; }, inc: (x: number) => x + 1 };",
+      "export const utils = { double(x: number): number { return x * 3; }, inc: (x: number) => x + 1 };",
+    );
+    const r = await compareFiles(o, n);
+    expect(get(r, "utils.double").status).toBe("changed");
+    expect(get(r, "utils.inc").status).toBe("unchanged");
+    rmSync(d, { recursive: true });
+  });
+});
